@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_top_charts"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:expandedTitleTextAppearance="@style/collapsing_toolbar_expanded"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:titleTextColor="@color/colorPrimaryText"></android.support.v7.widget.Toolbar>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMode="scrollable"
+            app:tabTextColor="@color/colorPrimaryText">
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/ti_pull_ups"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pull_ups" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/ti_push_ups"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/push_ups" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/ti_parallel_dips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/parallel_dips" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/ti_juggling"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/juggling" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/ti_points"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Points"
+                android:visibility="gone" />
+        </android.support.design.widget.TabLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/loadingPanel"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:gravity="center">-->
+
+        <!--<ProgressBar-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:indeterminate="true" />-->
+    <!--</RelativeLayout>-->
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/lightGrey"
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/lightGrey"
+            tools:context=".fragment.topCharts.TopChartsFragment">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_charts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>

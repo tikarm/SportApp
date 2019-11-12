@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.launch.LaunchFragment">
+
+    <Button
+        android:id="@+id/btn_sign_up_launch"
+        style="@style/btn_launch_style"
+        android:text="@string/sign_up"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_sign_in_launch"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btn_sign_in_launch"
+        style="@style/btn_launch_style"
+        android:text="@string/sign_in"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_sign_up_launch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_sign_up_launch"
+        app:layout_constraintTop_toTopOf="@+id/btn_sign_up_launch" />
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mv_launch"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/tv_description_launch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tv_description_launch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryLight"
+        android:elevation="@dimen/description_elevation"
+        android:padding="@dimen/description_padding"
+        android:text="@string/app_description"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryText"
+        android:textSize="@dimen/description_text_size"
+        app:layout_constraintBottom_toTopOf="@+id/btn_sign_up_launch"
+        app:layout_constraintStart_toStartOf="parent" />
+</android.support.constraint.ConstraintLayout>

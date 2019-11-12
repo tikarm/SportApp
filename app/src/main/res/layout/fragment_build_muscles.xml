@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightGrey"
+    tools:context=".fragment.tasks.BuildMusclesFragment">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_build_muscles"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_title_build_muscles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/notWhite"
+        android:elevation="4dp"
+        android:padding="8dp"
+        android:paddingBottom="8dp"
+        android:text="Each done exercise unlocks another one"
+        android:textAlignment="center"
+        android:textColor="@color/common_google_signin_btn_text_dark_focused"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_build_muscles" />
+
+    <TextView
+        android:id="@+id/tv_info_build_muscles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@color/notWhite"
+        android:elevation="4dp"
+        android:padding="12dp"
+        android:text="During each exercise do maximum repetitions"
+        android:textColor="@color/common_google_signin_btn_text_dark_focused"
+        android:textSize="24sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/squats_build_muscles" />
+
+    <TextView
+        android:id="@+id/tv_info_build_muscles2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@color/notWhite"
+        android:elevation="4dp"
+        android:padding="16dp"
+        android:text="There will be some motivational sentece"
+        android:textColor="@color/common_google_signin_btn_text_dark_focused"
+        android:textSize="24sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_info_build_muscles" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/push_ups_build_muscles"
+        android:layout_width="194dp"
+        android:layout_height="144dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/notWhite"
+        android:elevation="4dp"
+        app:layout_constraintEnd_toStartOf="@+id/pull_ups_build_muscles"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_build_muscles">
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/giv_push_ups_build_muscles"
+            android:layout_width="185dp"
+            android:layout_height="91dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/push_ups_gif"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/push_ups"
+            android:textColor="@color/place_autocomplete_search_text"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/giv_push_ups_build_muscles"
+            app:layout_constraintStart_toStartOf="@+id/giv_push_ups_build_muscles"
+            app:layout_constraintTop_toBottomOf="@+id/giv_push_ups_build_muscles" />
+
+        <Button
+            android:id="@+id/btn_push_ups_build_muscles"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_build_muscles_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/pull_ups_build_muscles"
+        android:layout_width="192dp"
+        android:layout_height="wrap_content"
+        android:background="@color/notWhite"
+        android:elevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/push_ups_build_muscles"
+        app:layout_constraintTop_toTopOf="@+id/push_ups_build_muscles">
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/giv_pull_ups_build_muscles"
+            android:layout_width="186dp"
+            android:layout_height="154dp"
+            android:src="@drawable/pull_ups_gif_14px"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_pull_ups_build_muscles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/pull_ups"
+            android:textAlignment="center"
+            android:textColor="@color/place_autocomplete_search_text"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/giv_pull_ups_build_muscles"
+            app:layout_constraintStart_toStartOf="@+id/giv_pull_ups_build_muscles"
+            app:layout_constraintTop_toBottomOf="@+id/giv_pull_ups_build_muscles" />
+
+        <Button
+            android:id="@+id/btn_pull_ups_build_muscles"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_build_muscles_button"
+            android:enabled="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/layout_lock_pull_ups_build_muscles"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/giv_pull_ups_build_muscles">
+
+            <ImageView
+                android:id="@+id/iv_transparent_build_muscles2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:src="@android:drawable/screen_background_dark_transparent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_lock_build_muscles2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_lock_outline_white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/iv_transparent_build_muscles2" />
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/squats_build_muscles"
+        android:layout_width="0dp"
+        android:layout_height="204dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/notWhite"
+        android:elevation="4dp"
+        app:layout_constraintEnd_toEndOf="@+id/push_ups_build_muscles"
+        app:layout_constraintStart_toStartOf="@+id/push_ups_build_muscles"
+        app:layout_constraintTop_toBottomOf="@+id/push_ups_build_muscles">
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/giv_squats_build_muscles"
+            android:layout_width="171dp"
+            android:layout_height="156dp"
+            android:src="@drawable/squats_14px"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_squats_ups_build_muscles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/squats"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/giv_squats_build_muscles"
+            app:layout_constraintStart_toStartOf="@+id/giv_squats_build_muscles"
+            app:layout_constraintTop_toBottomOf="@+id/giv_squats_build_muscles" />
+
+        <Button
+            android:id="@+id/btn_squats_build_muscles"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_build_muscles_button"
+            android:enabled="false"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/layout_lock_squats_build_muscles"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/iv_transparent_build_muscles3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@android:drawable/screen_background_dark_transparent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_lock_build_muscles3"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_lock_outline_white"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_transparent_build_muscles3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/iv_transparent_build_muscles3" />
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/abs_build_muscles"
+        android:layout_width="0dp"
+        android:layout_height="145dp"
+        android:background="@color/notWhite"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/squats_build_muscles"
+        app:layout_constraintEnd_toEndOf="@+id/pull_ups_build_muscles"
+        app:layout_constraintStart_toStartOf="@+id/pull_ups_build_muscles">
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/giv_sit_ups_build_muscles"
+            android:layout_width="184dp"
+            android:layout_height="87dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/sit_ups_gif_14px"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_sit_ups_build_muscles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/sit_ups"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/giv_sit_ups_build_muscles"
+            app:layout_constraintStart_toStartOf="@+id/giv_sit_ups_build_muscles"
+            app:layout_constraintTop_toBottomOf="@+id/giv_sit_ups_build_muscles" />
+
+        <Button
+            android:id="@+id/btn_sit_ups_build_muscles"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_build_muscles_button"
+            android:enabled="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/layout_lock_sit_ups_build_muscles"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/iv_transparent_build_muscles4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@android:drawable/screen_background_dark_transparent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_lock_build_muscles4"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_lock_outline_white"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_transparent_build_muscles4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/iv_transparent_build_muscles4" />
+        </android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

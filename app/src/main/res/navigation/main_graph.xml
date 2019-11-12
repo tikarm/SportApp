@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_bottom"
+    app:startDestination="@id/map_fragment">
+
+    <fragment
+        android:id="@+id/my_profile_fragment"
+        android:name="com.tigran.projects.projectx.fragment.profile.MyProfileFragment"
+        android:label="nickname"
+        tools:layout="@layout/fragment_my_profile">
+        <action
+            android:id="@+id/action_my_profile_fragment_to_fragment_launch"
+            app:destination="@id/menu_item_log_out"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_my_profile_fragment_to_my_profile_edit_fragment"
+            app:destination="@id/my_profile_edit_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+
+        <action
+            android:id="@+id/action_my_profile_fragment_to_photos_fragment"
+            app:destination="@id/photos_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/photos_fragment"
+        android:name="com.tigran.projects.projectx.fragment.profile.PhotosFragment"
+        tools:layout="@layout/fragment_photos" />
+
+
+    <fragment
+        android:id="@+id/map_fragment"
+        android:name="com.tigran.projects.projectx.fragment.map.MapFragment"
+        android:label="Map"
+        tools:layout="@layout/fragment_map">
+        <action
+            android:id="@+id/action_map_fragment_to_create_event_fragment"
+            app:destination="@id/create_event_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_map_fragment_to_tasks_fragment"
+            app:destination="@id/task_info_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_map_fragment_to_participants_fragment"
+            app:destination="@id/participants_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_map_fragment_to_build_muscles_fragment"
+            app:destination="@id/build_muscles_fragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/create_event_fragment"
+        android:name="com.tigran.projects.projectx.fragment.event.CreateEventFragment"
+        android:label="Create Event"
+        tools:layout="@layout/fragment_create_event">
+
+        <action
+            android:id="@+id/action_create_event_fragment_to_map_fragment"
+            app:destination="@id/map_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+
+    <!--______________________________________________________________ -->
+    <fragment
+        android:id="@+id/top_charts_fragment"
+        android:name="com.tigran.projects.projectx.fragment.topCharts.TopChartsFragment"
+        android:label="Top charts"
+        tools:layout="@layout/fragment_top_charts">
+
+        <action
+            android:id="@+id/action_top_charts_fragment_to_other_profile_fragment"
+            app:destination="@id/other_profile_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_top_charts_fragment_to_my_profile_fragment"
+            app:destination="@id/my_profile_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/participants_fragment"
+        android:name="com.tigran.projects.projectx.fragment.event.ParticipantsFragment"
+        android:label="Participants"
+        tools:layout="@layout/fragment_participants">
+        <action
+            android:id="@+id/action_participants_fragment_to_other_profile_fragment"
+            app:destination="@id/other_profile_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_participants_fragment_to_my_profile_fragment"
+            app:destination="@id/my_profile_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/other_profile_fragment"
+        android:name="com.tigran.projects.projectx.fragment.profile.OtherProfileFragment"
+        android:label="Other Profile"
+        tools:layout="@layout/fragment_other_profile">
+        <action
+            android:id="@+id/action_other_profile_fragment_to_other_photos_fragment"
+            app:destination="@id/other_photos_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/other_photos_fragment"
+        android:name="com.tigran.projects.projectx.fragment.profile.OtherPhotosFragment"
+        tools:layout="@layout/fragment_other_photos">
+        <action
+            android:id="@+id/action_other_photos_fragment_to_other_profile_fragment"
+            app:destination="@id/other_profile_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/image_gallery_fragment"
+        android:name="com.tigran.projects.projectx.fragment.profile.ImageGalleryFragment"
+        tools:layout="@layout/fragment_image_gallery">
+        <action
+            android:id="@+id/action_image_gallery_fragment_to_other_photos_fragment"
+            app:destination="@id/other_photos_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+    <!--______________________________________________________________ -->
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:name="com.tigran.projects.projectx.fragment.settings.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_settings_fragment_to_launch_fragment"
+            app:destination="@id/launch_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+<!--    <fragment-->
+<!--        android:id="@+id/launch_fragment"-->
+<!--        android:name="com.har8yun.homeworks.projectx.fragment.launch.LaunchFragment"-->
+<!--        tools:layout="@layout/fragment_launch" />-->
+    <fragment
+        android:id="@+id/launch_fragment"
+        android:name="com.tigran.projects.projectx.fragment.launch.LaunchFragment"
+        tools:layout="@layout/fragment_launch">
+        <action
+            android:id="@+id/action_launch_fragment_to_sign_in_fragment"
+            app:destination="@id/fragment_sign_in"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_launch_fragment_to_sign_up_fragment"
+            app:destination="@id/fragment_sign_up"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_sign_up"
+        android:name="com.tigran.projects.projectx.fragment.launch.SignUpFragment"
+        android:label=" "
+        tools:layout="@layout/fragment_sign_up">
+        <action
+            android:id="@+id/action_fragment_sign_up_to_fragment_sign_in"
+            app:destination="@id/fragment_sign_in"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right"
+            app:popUpTo="@id/menu_item_log_out" />
+        <action
+            android:id="@+id/action_fragment_sign_up_to_map_fragment"
+            app:destination="@id/map_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_sign_in"
+        android:name="com.tigran.projects.projectx.fragment.launch.SignInFragment"
+        android:label=" "
+        tools:layout="@layout/fragment_sign_in">
+        <action
+            android:id="@+id/action_fragment_sign_in_to_fragment_sign_up"
+            app:destination="@id/fragment_sign_up"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right"
+            app:popUpTo="@id/menu_item_log_out" />
+        <action
+            android:id="@+id/action_fragment_sign_in_to_map_fragment"
+            app:destination="@id/map_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/chats_fragment"
+        android:name="com.tigran.projects.projectx.fragment.chat.ChatsFragment"
+        android:label="Chats"
+        tools:layout="@layout/fragment_chats" />
+    <fragment
+        android:id="@+id/my_profile_edit_fragment"
+        android:name="com.tigran.projects.projectx.fragment.profile.MyProfileEditFragment"
+        android:label="Edit"
+        tools:layout="@layout/fragment_my_profile_edit">
+        <action
+            android:id="@+id/action_my_profile_edit_fragment_to_my_profile_fragment"
+            app:destination="@id/my_profile_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right"
+            app:popUpTo="@id/my_profile_fragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/task_info_fragment"
+        android:name="com.tigran.projects.projectx.fragment.tasks.TasksFragment"
+        android:label="fragment_tasks"
+        tools:layout="@layout/fragment_tasks" />
+    <action
+        android:id="@+id/action_global_map_fragment"
+        app:destination="@id/map_fragment" />
+    <fragment
+        android:id="@+id/build_muscles_fragment"
+        android:name="com.tigran.projects.projectx.fragment.tasks.BuildMusclesFragment"
+        android:label="Build Muscles"
+        tools:layout="@layout/fragment_build_muscles" />
+    <fragment
+        android:id="@+id/news_fragment"
+        android:name="com.tigran.projects.projectx.fragment.news.NewsFragment"
+        android:label="News"
+        tools:layout="@layout/fragment_news" />
+</navigation>
