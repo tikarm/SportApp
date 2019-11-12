@@ -3,6 +3,7 @@ package com.tigran.projects.projectx.fragment.launch;
 
 import android.app.ProgressDialog;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -13,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -137,6 +140,7 @@ public class SignInFragment extends Fragment {
                             //login
                             getCurrentUserFromDatabase();
                             openAccount(view);
+                            hideKeyboard();
                         } else {
                             Log.e("Look", "onComplete: " + task.getException().getMessage());
                             if (task.getException().getMessage().equals(getResources().getString(R.string.task_error_password))) {
@@ -187,7 +191,15 @@ public class SignInFragment extends Fragment {
             }
         }
         Log.d("SignIn", mCurrentUser.toString());
+    }
 
+    private void hideKeyboard()
+    {
+        View view = getActivity().findViewById(android.R.id.content);
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
 }

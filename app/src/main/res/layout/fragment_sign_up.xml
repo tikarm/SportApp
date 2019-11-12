@@ -72,6 +72,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            app:passwordToggleEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/til_email_sign_up">
@@ -84,13 +85,14 @@
                 android:drawablePadding="8dp"
                 android:hint="@string/password"
                 android:inputType="textPassword"
-                android:maxLength="256" />
+                android:maxLength="20" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/til_confirm_password_sign_up"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:passwordToggleEnabled="true"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="18dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -105,7 +107,8 @@
                 android:drawableStart="@drawable/ic_lock_outline_grey"
                 android:drawablePadding="8dp"
                 android:hint="@string/confirm_password"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:maxLength="20"/>
         </android.support.design.widget.TextInputLayout>
 
     </android.support.constraint.ConstraintLayout>
