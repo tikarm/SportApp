@@ -10,7 +10,7 @@
     swipe:leftEdgeSwipeOffset="0dp"
     swipe:rightEdgeSwipeOffset="0dp">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
 
@@ -30,7 +30,7 @@
             swipe:layout_constraintTop_toTopOf="@id/iv_avatar_chat_user"
             swipe:layout_constraintEnd_toEndOf="parent"
             swipe:layout_constraintBottom_toBottomOf="parent"/>
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </com.daimajia.swipe.SwipeLayout>

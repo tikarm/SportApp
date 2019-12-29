@@ -151,7 +151,8 @@
     <string name="click_edit_button_to_add_information_about_you">Click EDIT button to add information about you</string>
     <string name="weight_space">Weight:</string>
     <string name="height_space">Height:</string>
-    <string name="all_photos">All photos</string>
+    <string name="all_photos"><u>All photos</u></string>
+
     <string name="user_info">User info</string>
     <string name="full_name">Full Name:</string>
 

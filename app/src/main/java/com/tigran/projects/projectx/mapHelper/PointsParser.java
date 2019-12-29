@@ -2,7 +2,7 @@ package com.tigran.projects.projectx.mapHelper;
 
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;

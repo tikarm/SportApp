@@ -1,15 +1,16 @@
 package com.tigran.projects.projectx.fragment.news;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tigran.projects.projectx.R;
@@ -26,7 +27,7 @@ import java.util.List;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,6 +47,7 @@ public class NewsFragment extends Fragment {
     private NewsAdapter mNewsAdapter;
 
     //views
+    private ProgressBar mProgressBar;
 //    private Toolbar mToolbarNews;
 
     //navigation
@@ -80,6 +82,7 @@ public class NewsFragment extends Fragment {
 
     private void initViews(View view) {
         mRecyclerView = view.findViewById(R.id.rv_news);
+        mProgressBar = view.findViewById(R.id.pb_news);
 //        mToolbarNews = view.findViewById(R.id.toolbar_news);
     }
 
@@ -96,6 +99,7 @@ public class NewsFragment extends Fragment {
                     mArticles = response.body().getArticle();
                     initRecyclerView();
                     mNewsAdapter.notifyDataSetChanged();
+                    mProgressBar.setVisibility(View.GONE);
                 } else {
                     Toast.makeText(getContext(), "No result", Toast.LENGTH_SHORT).show();
                 }

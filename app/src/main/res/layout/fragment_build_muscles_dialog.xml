@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_main_muscles_dialog"
@@ -10,7 +10,7 @@
     android:paddingBottom="12dp"
     tools:context=".fragment.tasks.BuildMusclesDialogFragment">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_title_muscles_dialog"
         android:layout_width="294dp"
         android:layout_height="wrap_content"
@@ -31,9 +31,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_title_muscles_dialog_title_muscles_dialog"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -60,9 +60,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_sets_muscles_dialog"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -247,9 +247,9 @@
             app:layout_constraintEnd_toEndOf="@+id/btn_done4_muscles_dialog"
             app:layout_constraintStart_toStartOf="@+id/btn_done4_muscles_dialog"
             app:layout_constraintTop_toTopOf="@+id/btn_done4_muscles_dialog" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_timer_muscles_dialog"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -301,5 +301,5 @@
             app:layout_constraintStart_toEndOf="@+id/tv_rest_muscles_dialog"
             app:layout_constraintTop_toTopOf="@+id/btn_stop_timer_muscles_dialog" />
 
-    </android.support.constraint.ConstraintLayout>
-</android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

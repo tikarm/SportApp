@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="192dp"
         android:fitsSystemWindows="true">
 
-        <android.support.design.widget.CollapsingToolbarLayout
+        <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/ctl_my_profile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -99,7 +99,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/app_bar_image"
                 app:layout_constraintStart_toEndOf="@+id/app_bar_image" />
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar_my_profile"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
@@ -108,16 +108,17 @@
                 android:visibility="visible"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        >
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/lightGrey"
@@ -136,7 +137,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_height_and_weight_my_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -180,7 +181,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="68dp"
-                    android:hint="@string/your_weight"
+                    android:hint="━"
                     android:padding="20dp"
                     android:paddingStart="0dp"
                     android:textColor="@color/common_google_signin_btn_text_dark_focused"
@@ -217,7 +218,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="100dp"
-                    android:hint="@string/your_height"
+                    android:hint="━"
                     android:padding="20dp"
                     android:paddingStart="0dp"
                     android:textColor="@color/common_google_signin_btn_text_dark_focused"
@@ -234,9 +235,9 @@
                     app:layout_constraintStart_toStartOf="@+id/label_height_my_profile"
                     app:layout_constraintTop_toBottomOf="@+id/label_height_my_profile" />
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_photos_my_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -285,9 +286,9 @@
                     app:srcCompat="@drawable/ic_photo_library" />
 
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_user_info_my_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -412,9 +413,9 @@
                     app:layout_constraintStart_toEndOf="@+id/tv_first_name_my_profile"
                     app:layout_constraintTop_toTopOf="@+id/label_full_name_my_profile" />
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_skills_my_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -438,7 +439,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_skills_my_profile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -448,11 +449,11 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_skills_my_profile" />
 
-            </android.support.constraint.ConstraintLayout>
-        </android.support.constraint.ConstraintLayout>
-    </android.support.v4.widget.NestedScrollView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_edit_my_profile"
         style="@style/Widget.Design.FloatingActionButton"
         android:layout_width="wrap_content"
@@ -465,4 +466,4 @@
         app:layout_anchorGravity="bottom|end" />
 
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
