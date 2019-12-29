@@ -46,7 +46,7 @@ public class NewsFragment extends Fragment {
     private NewsAdapter mNewsAdapter;
 
     //views
-    private Toolbar mToolbarNews;
+//    private Toolbar mToolbarNews;
 
     //navigation
     private NavController mNavController;
@@ -80,7 +80,7 @@ public class NewsFragment extends Fragment {
 
     private void initViews(View view) {
         mRecyclerView = view.findViewById(R.id.rv_news);
-        mToolbarNews = view.findViewById(R.id.toolbar_news);
+//        mToolbarNews = view.findViewById(R.id.toolbar_news);
     }
 
     private void LoadJson() {
@@ -110,13 +110,13 @@ public class NewsFragment extends Fragment {
 
     private void setNewsToolbar() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(mToolbarNews);
+//        activity.setSupportActionBar(mToolbarNews);
     }
 
     private void setNavigationComponent() {
         mNavController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(setOf(R.id.news_fragment)).build();
-        NavigationUI.setupWithNavController(mToolbarNews, mNavController, appBarConfiguration);
+//        NavigationUI.setupWithNavController(mToolbarNews, mNavController, appBarConfiguration);
     }
 
 

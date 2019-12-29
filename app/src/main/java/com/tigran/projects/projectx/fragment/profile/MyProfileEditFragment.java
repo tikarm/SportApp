@@ -79,6 +79,7 @@ import com.tigran.projects.projectx.util.DBUtil;
 import com.tigran.projects.projectx.util.PermissionChecker;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -306,7 +307,6 @@ public class MyProfileEditFragment extends Fragment {
         mBottomNavigationView = getActivity().findViewById(R.id.bottom_navigation_view_main);
 
 
-
         mSportsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -400,9 +400,12 @@ public class MyProfileEditFragment extends Fragment {
 
             if (mCurrentUser.getUserInfo().getBirthDate() != null) {
                 Date date = mCurrentUser.getUserInfo().getBirthDate();
-                mBirthDateView.setText(String.valueOf(date.getDay()
-                        + "/" + date.getMonth()
-                        + "/" + date.getYear()));
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String dateString = sdf.format(date);
+//                mBirthDateView.setText(String.valueOf(date.getDay()
+//                        + "/" + date.getMonth()
+//                        + "/" + date.getYear()));
+                mBirthDateView.setText(dateString);
             }
             if (mCurrentUser.getUserInfo().getGender() != null) {
                 if (mCurrentUser.getUserInfo().getGender() == 0) {
@@ -414,13 +417,11 @@ public class MyProfileEditFragment extends Fragment {
             if (mCurrentUser.getUserInfo().getAvatar() != null) {
                 mProgressBar.setVisibility(View.VISIBLE);
                 setAvatar(mCurrentUser.getUserInfo().getAvatar());
-            }
-            else{
+            } else {
                 mAvatarView.setImageResource(R.drawable.ic_add_a_photo);
                 mProgressBar.setVisibility(View.GONE);
             }
-        }
-        else {
+        } else {
 
             mAvatarView.setImageResource(R.drawable.ic_person_outline_grey);
             mProgressBar.setVisibility(View.GONE);
@@ -450,7 +451,7 @@ public class MyProfileEditFragment extends Fragment {
         DBUtil.getRefAvatars(url).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                res =  uri.toString();
+                res = uri.toString();
                 Log.e(TAG, "onSuccess: " + uri);
                 Glide.with(getContext())
                         .load(res)
@@ -477,7 +478,7 @@ public class MyProfileEditFragment extends Fragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Log.e(TAG, "onFailure: Failed AGAIN" );
+                Log.e(TAG, "onFailure: Failed AGAIN");
             }
         });
 
@@ -625,8 +626,7 @@ public class MyProfileEditFragment extends Fragment {
         if (mBirthDateView.getText() != null && dateOpened) {
             mUserInfo.setBirthDate(mDate);
         }
-        if(imageName!=null)
-        {
+        if (imageName != null) {
             mUserInfo.setAvatar(imageName);
             mProgressBar.setVisibility(View.GONE);
         }
@@ -827,9 +827,13 @@ public class MyProfileEditFragment extends Fragment {
                 cal.set(Calendar.MONTH, monthOfYear);
                 cal.set(Calendar.DATE, dayOfMonth);
                 mDate = cal.getTime();
-                mBirthDateView.setText(String.valueOf(mDate.getDay()
-                        + "/" + mDate.getMonth()
-                        + "/" + mDate.getYear()));
+//                mBirthDateView.setText(String.valueOf(mDate.getDay()
+//                        + "/" + mDate.getMonth()
+//                        + "/" + mDate.getYear()));
+
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String dateString = sdf.format(mDate);
+                mBirthDateView.setText(dateString);
             }
         }, mYear, mMonth, mDay);
 

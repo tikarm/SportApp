@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DatabaseReference;
@@ -45,6 +46,7 @@ public class PhotosFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private TextView textView;
     private LinearLayout layout;
+    private ProgressBar mProgressBar;
 
     //adapter
     private PhotosAdapter mPhotosAdapter;
@@ -92,6 +94,7 @@ public class PhotosFragment extends Fragment {
         mRecyclerView = view.findViewById(R.id.rv_photos);
         textView = view.findViewById(R.id.tv_text_adapter);
         layout = view.findViewById(R.id.layout_my_gallery);
+        mProgressBar = view.findViewById(R.id.pb_photos_fragment);
 
         initRecyclerView();
     }

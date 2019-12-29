@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -62,6 +63,9 @@ import com.tigran.projects.projectx.util.DBUtil;
 import com.tigran.projects.projectx.util.PermissionChecker;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -408,7 +412,7 @@ public class MyProfileFragment extends Fragment {
                 mFirstNameView.setText(mCurrentUser.getUserInfo().getFirstName());
             }
             if (mCurrentUser.getUserInfo().getLastName() != null) {
-                mFirstNameView.append(" "+mCurrentUser.getUserInfo().getLastName());
+                mFirstNameView.append(" " + mCurrentUser.getUserInfo().getLastName());
             }
             if (mCurrentUser.getUserInfo().getGender() != null) {
                 if (mCurrentUser.getUserInfo().getGender() == 0) {
@@ -419,7 +423,15 @@ public class MyProfileFragment extends Fragment {
             }
             if (mCurrentUser.getUserInfo().getBirthDate() != null) {
                 Date date = mCurrentUser.getUserInfo().getBirthDate();
-                int b = date.getYear();
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String dateString = sdf.format(date);
+
+//                int b = date.getYear();
+                String[] dateArray = dateString.split("/");
+                int b = 0;
+                if (dateArray.length == 3) {
+                    b = Integer.valueOf(dateArray[2]);
+                }
                 int y = Calendar.getInstance().get(Calendar.YEAR);
                 int m = Calendar.getInstance().get(Calendar.MONTH);
                 int d = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
@@ -434,6 +446,7 @@ public class MyProfileFragment extends Fragment {
                 } else {
                     mAgeView.setText(String.valueOf(ss - 1));
                 }
+
 
             }
             if (mCurrentUser.getUserInfo() != null) {

@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -52,14 +53,13 @@ public class SettingsFragment extends Fragment {
     private NavController mNavController;
 
     //views
-    private Toolbar mToolbarSettings;
     private Spinner mThemeSpinner;
     private Switch mNotificationsSwitch;
     private Switch mMapZoomSwitch;
     private Switch mUserInfoSwitch;
     private TextView mFontSizeView;
     private TextView mLanguageView;
-    private TextView mDeleteAccountView;
+    private Button mDeleteAccountButton;
 
     //colors
     Color colorRed;
@@ -119,15 +119,14 @@ public class SettingsFragment extends Fragment {
 
     //************************************** METHODS ********************************************
     private void initViews(View view) {
-        mToolbarSettings = view.findViewById(R.id.toolbar_settings);
         mNotificationsSwitch = view.findViewById(R.id.sw_notifications_settings);
         mMapZoomSwitch = view.findViewById(R.id.sw_zoom_buttons_settings);
         mUserInfoSwitch = view.findViewById(R.id.sw_user_info_settings);
-        mDeleteAccountView = view.findViewById(R.id.tv_delete_account_settings);
+        mDeleteAccountButton = view.findViewById(R.id.btn_delete_account_settings);
         mThemeSpinner = view.findViewById(R.id.spinner_theme);
         mNavHostFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
 
-        mDeleteAccountView.setOnClickListener(new View.OnClickListener() {
+        mDeleteAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
@@ -238,12 +237,12 @@ public class SettingsFragment extends Fragment {
     private void setNavigationComponent() {
         mNavController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(setOf(R.id.settings_fragment)).build();
-        NavigationUI.setupWithNavController(mToolbarSettings, mNavController, appBarConfiguration);
+//        NavigationUI.setupWithNavController(mToolbarSettings, mNavController, appBarConfiguration);
     }
 
     private void setSettingsToolbar() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(mToolbarSettings);
+//        activity.setSupportActionBar(mToolbarSettings);
         setHasOptionsMenu(true);
     }
 }
