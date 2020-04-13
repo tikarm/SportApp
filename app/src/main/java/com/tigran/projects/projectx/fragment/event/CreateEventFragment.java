@@ -3,16 +3,23 @@ package com.tigran.projects.projectx.fragment.event;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.content.DialogInterface;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,9 +57,9 @@ public class CreateEventFragment extends Fragment {
     private Toolbar mToolbarCreateEvent;
     private EditText mTitleView;
     private EditText mDescriptionView;
-    private TextView mDateView;
+    private EditText mDateView;
+    private EditText mLocationView;
     private Button mSaveButton;
-    private TextView mLocationView;
     private BottomNavigationView mBottomNavigationView;
 
     //calendar
@@ -67,6 +74,7 @@ public class CreateEventFragment extends Fragment {
     private UserViewModel mUserViewModel;
     private User mCurrentUser;
     private boolean pass1, pass2, pass3 = false;
+    private boolean isEdit = false;
 
     //Firebase
     DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference("events");
@@ -91,11 +99,12 @@ public class CreateEventFragment extends Fragment {
             }
         });
         mEvent = mEventViewModel.getEvent().getValue();
+        isEdit = mEventViewModel.isToEdit();
         initViews(view);
         hideBotNavBar();
 
 
-        if (mEventViewModel.isToEdit()) {
+        if (isEdit) {
             initEditViews();
         }
 
@@ -214,9 +223,9 @@ public class CreateEventFragment extends Fragment {
         mToolbarCreateEvent = v.findViewById(R.id.toolbar_create_event);
         mTitleView = v.findViewById(R.id.etv_title_create_event);
         mDescriptionView = v.findViewById(R.id.etv_description_create_event);
-        mDateView = v.findViewById(R.id.tv_date_create_event);
+        mDateView = v.findViewById(R.id.etv_date_create_event);
+        mLocationView = v.findViewById(R.id.etv_location_create_event);
         mSaveButton = v.findViewById(R.id.btn_save_create_event);
-        mLocationView = v.findViewById(R.id.tv_location_create_event);
         mBottomNavigationView = getActivity().findViewById(R.id.bottom_navigation_view_main);
         mLocationView.setText(mEvent.getPlace());
     }
@@ -254,7 +263,6 @@ public class CreateEventFragment extends Fragment {
         mDescriptionView.setText(mEvent.getDescription());
         mDateView.setText(mEvent.getDate().toString());
         mSaveButton.setText("Save Changes");
-
     }
 
     private void editEvent() {
@@ -287,7 +295,10 @@ public class CreateEventFragment extends Fragment {
     private void setCreateEventToolbar() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(mToolbarCreateEvent);
-        setHasOptionsMenu(true);
+        if (isEdit) {
+            setHasOptionsMenu(true);
+            activity.getSupportActionBar().setTitle("Edit Event");
+        }
     }
 
     private void setNavigationComponent() {

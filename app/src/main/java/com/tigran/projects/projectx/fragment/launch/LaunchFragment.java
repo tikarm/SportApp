@@ -2,16 +2,25 @@ package com.tigran.projects.projectx.fragment.launch;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,6 +38,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tigran.projects.projectx.R;
+import com.tigran.projects.projectx.fragment.event.CreateEventFragment;
 import com.tigran.projects.projectx.model.Event;
 import com.tigran.projects.projectx.util.GpsUtils;
 import com.karumi.dexter.Dexter;
@@ -132,31 +142,37 @@ public class LaunchFragment extends Fragment implements OnMapReadyCallback {
                 for (final Event event : mEventList) {
                     if (marker.getPosition().latitude == event.getPosition().getLatitude()
                             && marker.getPosition().longitude == event.getPosition().getLongitude()) {
-                        Dialog dialog = new Dialog(getContext());
-                        dialog.setTitle(event.getTitle());
-                        dialog.setContentView(R.layout.dialog_event_information);
+
+                        CreateEventFragment cef = new CreateEventFragment();
+
+                        MaterialDialog.Builder eventDialogBuilder = new MaterialDialog.Builder(getContext());
+                        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_event_information,null);
+                        eventDialogBuilder.customView(dialogView,false);
+                        MaterialDialog eventDialog = eventDialogBuilder.build();
+
+                        eventDialogBuilder.negativeText("Cancel");
+                        eventDialogBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                            }
+                        });
 
                         //setting Dialog Views ----------------------------------------------
-                        TextView titleView = dialog.findViewById(R.id.tv_title_dialog);
-                        TextView descriptionView = dialog.findViewById(R.id.tv_description_dialog);
-                        TextView dateLocationView = dialog.findViewById(R.id.tv_date_location_dialog);
-                        TextView creatorView = dialog.findViewById(R.id.tv_creator_username_dialog);
+                        EditText titleView = dialogView.findViewById(R.id.etv_title_dialog);
+                        EditText descriptionView = dialogView.findViewById(R.id.etv_description_dialog);
+                        EditText dateLocationView = dialogView.findViewById(R.id.etv_date_location_dialog);
+                        EditText creatorView = dialogView.findViewById(R.id.etv_creator_dialog);
+                        TextView participantsView = dialogView.findViewById(R.id.tv_participants_dialog);
 
-                        Button goingButton = dialog.findViewById(R.id.btn_going_dialog);
-                        Button cancelButton = dialog.findViewById(R.id.btn_cancel_dialog);
-
-                        goingButton.setVisibility(View.INVISIBLE);
 
                         titleView.setText(event.getTitle());
                         descriptionView.setText(event.getDescription());
                         dateLocationView.setText(event.getDate().toGMTString());
                         creatorView.setText(event.getCreator().getUsername());
 
-                        dialog.show();
+                        eventDialog.show();
 
-                        cancelButton.setOnClickListener(v -> {
-                            dialog.dismiss();
-                        });
                     }
                 }
                 return true;

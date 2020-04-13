@@ -25,6 +25,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.core.app.ActivityCompat;
@@ -42,6 +45,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -502,7 +506,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
 
 
     private void moveCamera(LatLng latLng, float zoom, String title) {
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
     private void initSearch() {
@@ -625,35 +629,80 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                     if (marker.getPosition().latitude == event.getPosition().getLatitude()
                             && marker.getPosition().longitude == event.getPosition().getLongitude()) {
                         mEventViewModel.setEvent(event);
-                        Dialog dialog = new Dialog(getContext());
-                        dialog.setTitle(event.getTitle());
-                        dialog.setContentView(R.layout.dialog_event_information);
+
+                        String goingToEventString = "Going";
+                        for (String id : event.getParticipants()) {
+                            if (id.equals(mCurrentUser.getId())) {
+                                goingToEvent = true;
+                                goingToEventString = "Not Going";
+                            }
+                        }
+                        CreateEventFragment cef = new CreateEventFragment();
+
+                        MaterialDialog.Builder eventDialogBuilder = new MaterialDialog.Builder(getContext());
+//                        eventDialogBuilder.setTitle(event.getTitle());
+                        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_event_information,null);
+                        eventDialogBuilder.customView(dialogView,false);
+                        eventDialogBuilder.positiveText(goingToEventString);
+                        eventDialogBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                goingToEvent = !goingToEvent;
+                                if (goingToEvent) {
+                                    eventDialogBuilder.positiveText("Not Going");
+                                    event.getParticipants().add(mCurrentUser.getId());
+                                    mCurrentUser.getmGoingEvents().add(event.getUid());
+                                    updateUserInFirebase();
+
+                                    cef.updateEventInFirebase(event);
+                                } else {
+                                    eventDialogBuilder.positiveText("Going");
+                                    event.getParticipants().remove(mCurrentUser.getId());
+                                    mCurrentUser.getmGoingEvents().remove(event.getUid());
+
+                                    updateUserInFirebase();
+                                    cef.updateEventInFirebase(event);
+                                }
+                            }
+                        });
+
+                        eventDialogBuilder.negativeText("Cancel");
+                        eventDialogBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                            }
+                        });
+
                         Log.e(TAG, "onMarkerClick: " + event.getDate().toGMTString());
 
                         //setting Dialog Views ----------------------------------------------
-                        TextView titleView = dialog.findViewById(R.id.tv_title_dialog);
-                        TextView descriptionView = dialog.findViewById(R.id.tv_description_dialog);
-                        TextView dateLocationView = dialog.findViewById(R.id.tv_date_location_dialog);
-                        TextView creatorView = dialog.findViewById(R.id.tv_creator_username_dialog);
-                        TextView participantsView = dialog.findViewById(R.id.tv_participants_dialog);
-                        ImageView editView = dialog.findViewById(R.id.iv_to_change_event_dialog);
-                        Button goingButton = dialog.findViewById(R.id.btn_going_dialog);
-                        Button cancelButton = dialog.findViewById(R.id.btn_cancel_dialog);
+                        EditText titleView = dialogView.findViewById(R.id.etv_title_dialog);
+                        EditText descriptionView = dialogView.findViewById(R.id.etv_description_dialog);
+                        EditText dateLocationView = dialogView.findViewById(R.id.etv_date_location_dialog);
+                        EditText creatorView = dialogView.findViewById(R.id.etv_creator_dialog);
+                        TextView participantsView = dialogView.findViewById(R.id.tv_participants_dialog);
+                        Button editButton = dialogView.findViewById(R.id.btn_to_change_event_dialog);
+//                        Button goingButton = dialogView.findViewById(R.id.btn_going_dialog);
+//                        Button cancelButton = dialogView.findViewById(R.id.btn_cancel_dialog);
 
                         titleView.setText(event.getTitle());
                         descriptionView.setText(event.getDescription());
                         dateLocationView.setText(event.getDate().toGMTString());
                         creatorView.setText(event.getCreator().getUsername());
 
+                        MaterialDialog eventDialog = eventDialogBuilder.build();
+                        eventDialog.show();
+
                         //checking if current user is the creator of event ------------------------------------------
                         if (event.getCreator().getId().equals(mCurrentUser.getId())) {
-                            editView.setVisibility(View.VISIBLE);
-                            editView.setOnClickListener(new View.OnClickListener() {
+                            editButton.setVisibility(View.VISIBLE);
+                            editButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     mEventViewModel.setEvent(event);
                                     mEventViewModel.setToEdit(true);
-                                    dialog.dismiss();
+                                    eventDialog.dismiss();
                                     NavHostFragment.findNavController(mNavHostFragment).navigate(R.id.action_map_fragment_to_create_event_fragment);
                                 }
                             });
@@ -680,49 +729,48 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                         participantsView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog.dismiss();
+                                eventDialog.dismiss();
                                 NavHostFragment.findNavController(mNavHostFragment).navigate(R.id.action_map_fragment_to_participants_fragment);
                             }
                         });
 
-
-                        for (String id : event.getParticipants()) {
-                            if (id.equals(mCurrentUser.getId())) {
-                                goingToEvent = true;
-                                goingButton.setText("Not Going");
-                            }
-                        }
-
-                        dialog.show();
-                        CreateEventFragment cef = new CreateEventFragment();
-
-                        goingButton.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                goingToEvent = !goingToEvent;
-                                if (goingToEvent) {
-                                    goingButton.setText("Not Going");
-                                    event.getParticipants().add(mCurrentUser.getId());
-                                    mCurrentUser.getmGoingEvents().add(event.getUid());
-                                    updateUserInFirebase();
-
-                                    cef.updateEventInFirebase(event);
-                                } else {
-                                    goingButton.setText("Going");
-                                    event.getParticipants().remove(mCurrentUser.getId());
-                                    mCurrentUser.getmGoingEvents().remove(event.getUid());
-
-                                    updateUserInFirebase();
-                                    cef.updateEventInFirebase(event);
-                                }
-
-                            }
-                        });
-                        cancelButton.setOnClickListener(v -> {
-                            goingToEvent = false;
-                            dialog.dismiss();
-                        });
+//                        for (String id : event.getParticipants()) {
+//                            if (id.equals(mCurrentUser.getId())) {
+//                                goingToEvent = true;
+//                                goingButton.setText("Not Going");
+//                            }
+//                        }
+//
+////                        eventDialogBuilder.show();
+////                        CreateEventFragment cef = new CreateEventFragment();
+//
+//                        goingButton.setOnClickListener(new View.OnClickListener() {
+//
+//                            @Override
+//                            public void onClick(View v) {
+//                                goingToEvent = !goingToEvent;
+//                                if (goingToEvent) {
+//                                    goingButton.setText("Not Going");
+//                                    event.getParticipants().add(mCurrentUser.getId());
+//                                    mCurrentUser.getmGoingEvents().add(event.getUid());
+//                                    updateUserInFirebase();
+//
+//                                    cef.updateEventInFirebase(event);
+//                                } else {
+//                                    goingButton.setText("Going");
+//                                    event.getParticipants().remove(mCurrentUser.getId());
+//                                    mCurrentUser.getmGoingEvents().remove(event.getUid());
+//
+//                                    updateUserInFirebase();
+//                                    cef.updateEventInFirebase(event);
+//                                }
+//
+//                            }
+//                        });
+//                        cancelButton.setOnClickListener(v -> {
+//                            goingToEvent = false;
+//                            eventDialogBuilder.dismiss();
+//                        });
                     }
                 }
                 return true;
@@ -957,7 +1005,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                 mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
 
                 //move map camera
-                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
+                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
             }
         }
     };

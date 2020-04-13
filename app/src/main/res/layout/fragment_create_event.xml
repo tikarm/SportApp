@@ -23,9 +23,9 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_title_create_event"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -39,14 +39,16 @@
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                android:textSize="24sp" />
+                android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_description_create_event"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:hint="@string/description"
             app:layout_constraintEnd_toEndOf="@id/til_title_create_event"
             app:layout_constraintStart_toStartOf="@id/til_title_create_event"
             app:layout_constraintTop_toBottomOf="@id/til_title_create_event">
@@ -55,9 +57,7 @@
                 android:id="@+id/etv_description_create_event"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/border_text_input"
                 android:gravity="top|center_vertical"
-                android:hint="@string/description"
                 android:imeOptions="actionDone"
                 android:inputType="textMultiLine"
                 android:lines="3"
@@ -85,62 +85,63 @@
         android:elevation="4dp"
         android:paddingStart="16dp"
         android:paddingTop="4dp"
-        android:paddingEnd="8dp"
+        android:paddingEnd="16dp"
         android:paddingBottom="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout4">
 
-        <TextView
-            android:id="@+id/tv_location_create_event"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_date_create_event"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etv_date_create_event"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_date_grey"
+                android:drawablePadding="6dp"
+                android:hint="@string/set_date_and_time"
+                android:maxLines="1"
+                android:focusable="false"
+                android:singleLine="true"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_location_create_event"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/bg_tv_border"
-            android:ellipsize="end"
-            android:padding="8dp"
-            android:text="@string/location"
-            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tv_date_create_event"
-            app:layout_constraintTop_toBottomOf="@+id/tv_date_create_event" />
+            app:layout_constraintStart_toStartOf="@+id/til_date_create_event"
+            app:layout_constraintTop_toBottomOf="@+id/til_date_create_event">
 
-        <TextView
-            android:id="@+id/tv_date_create_event"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/bg_tv_border"
-            android:ellipsize="end"
-            android:padding="8dp"
-            android:text="@string/set_date_and_time"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iv_date_create_event"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etv_location_create_event"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_place_grey"
+                android:drawablePadding="6dp"
+                android:hint="Location"
+                android:clickable="false"
+                android:focusable="false"
+                android:longClickable="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <ImageView
-            android:id="@+id/iv_date_create_event"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:contentDescription="@string/set_date_and_time"
-            android:src="@drawable/ic_date_grey"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_date_create_event"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_date_create_event" />
-
-        <ImageView
-            android:id="@+id/iv_location_create_event"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:contentDescription="@string/location"
-            android:src="@drawable/ic_place_grey"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_location_create_event"
-            app:layout_constraintStart_toStartOf="@+id/iv_date_create_event"
-            app:layout_constraintTop_toTopOf="@+id/tv_location_create_event" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.appcompat.widget.Toolbar
@@ -149,21 +150,20 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="@string/create_event"/>
 
     <Button
         android:id="@+id/btn_save_create_event"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/bg_light_red_layout_button2"
-        android:elevation="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:backgroundTint="@android:color/white"
         android:text="@string/create_event"
-        android:textColor="@color/colorPrimaryText"
-        android:textSize="18sp"
-        android:textStyle="bold"
+        android:textColor="@android:color/holo_red_dark"
         app:layout_constraintEnd_toEndOf="@+id/constraintLayout4"
         app:layout_constraintStart_toStartOf="@+id/constraintLayout4"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout5" />

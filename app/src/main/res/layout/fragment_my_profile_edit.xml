@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -42,6 +41,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_first_name_my_profile_edit"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -64,6 +64,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_last_name_my_profile_edit"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -180,19 +181,20 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_username_my_profile_edit"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="@string/username"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/tv_change_password_my_profile_edit">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etv_username_my_profile_edit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:foregroundTint="@color/colorPrimary"
-
+                        tools:text="tigran"
                         android:maxLength="20"
                         android:singleLine="true"
                         android:textColorHint="@color/colorPrimaryText" />
@@ -347,14 +349,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/male"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:buttonTint="@color/colorPrimary"/>
 
                     <RadioButton
                         android:id="@+id/rb_female_my_profile_edit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/female"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:buttonTint="@color/colorPrimary"/>
 
                 </RadioGroup>
             </androidx.constraintlayout.widget.ConstraintLayout>

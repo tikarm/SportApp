@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 public class EventViewModel extends ViewModel {
 
     private MutableLiveData<Event> mEventMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mIsEditMutableLiveData = new MutableLiveData<>();
     private boolean toEdit;
 
     public void setEvent(Event event){

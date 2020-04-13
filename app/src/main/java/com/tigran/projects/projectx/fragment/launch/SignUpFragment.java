@@ -226,7 +226,7 @@ public class SignUpFragment extends Fragment {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     if (mUsernameView.getText().length() < 6 && mUsernameView.getText().length() != 0) {
-                        mUsernameView.setError(getResources().getString(R.string.username_length_short));
+                        mUsernameLayout.setError(getResources().getString(R.string.username_length_short));
                     }else{
                         mUsernameLayout.setError(null);
                     }

@@ -1,5 +1,5 @@
 <resources>
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
@@ -7,14 +7,17 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorPrimary</item>
 
-        <item name="colorControlNormal">#c5c5c5</item>
+        <item name="colorControlNormal">@android:color/white</item>
         <item name="colorControlActivated">#616161</item>
         <item name="colorControlHighlight">@color/colorPrimary</item>
+
+        <item name="toolbarStyle">@style/CustomToolBarStyle</item>
+        <item name="android:actionMenuTextColor">@android:color/white</item>
 
 
     </style>
 
-    <style name="AppThemeBlue" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppThemeBlue" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
@@ -26,9 +29,11 @@
         <item name="colorControlActivated">#616161</item>
         <item name="colorControlHighlight">@color/colorBluePrimary</item>
 
+        <item name="toolbarStyle">@style/CustomToolBarStyle</item>
+
     </style>
 
-    <style name="AppThemeGreen" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppThemeGreen" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
@@ -40,9 +45,11 @@
         <item name="colorControlActivated">#616161</item>
         <item name="colorControlHighlight">@color/colorGreenPrimary</item>
 
+        <item name="toolbarStyle">@style/CustomToolBarStyle</item>
+
     </style>
 
-    <style name="AppThemeViolet" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppThemeViolet" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
@@ -53,6 +60,8 @@
         <item name="colorControlNormal">#c5c5c5</item>
         <item name="colorControlActivated">#616161</item>
         <item name="colorControlHighlight">@color/colorVioletPrimary</item>
+
+        <item name="toolbarStyle">@style/CustomToolBarStyle</item>
 
     </style>
 
@@ -78,6 +87,12 @@
         <item name="android:textColor">@color/colorPrimaryText</item>
     </style>
 
-
+    <!-- ToolBar -->
+    <style name="CustomToolBarStyle" parent="@style/Widget.AppCompat.Toolbar">
+        <item name="titleTextColor">@android:color/white</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
+        <item name="colorControlNormal">@android:color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+    </style>
 
 </resources>

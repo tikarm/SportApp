@@ -85,6 +85,12 @@ dependencies {
     //Runtime permissions helper
     implementation 'com.karumi:dexter:5.0.0'
 
+    //material-dialog
+    implementation 'com.afollestad.material-dialogs:core:0.9.1.0'
+
+    implementation 'com.google.android.material:material:1.1.0'
+
+
 
 }
 

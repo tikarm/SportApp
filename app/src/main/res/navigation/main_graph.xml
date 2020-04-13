@@ -63,7 +63,6 @@
     <fragment
         android:id="@+id/create_event_fragment"
         android:name="com.tigran.projects.projectx.fragment.event.CreateEventFragment"
-        android:label="Create Event"
         tools:layout="@layout/fragment_create_event">
 
         <action
