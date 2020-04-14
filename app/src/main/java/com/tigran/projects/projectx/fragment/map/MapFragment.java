@@ -3,8 +3,10 @@ package com.tigran.projects.projectx.fragment.map;
 
 import android.Manifest;
 import android.app.Dialog;
+
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -21,6 +23,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -30,11 +33,13 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
+
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -112,7 +117,9 @@ import com.tigran.projects.projectx.util.PermissionChecker;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
@@ -208,6 +215,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
     DatabaseReference mFirebaseDatabse;
     DatabaseReference mFirebaseDatabseUser;
 
+    //date format
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy, HH:mm");
+
 
     //constructor
     public MapFragment() {
@@ -229,7 +239,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         mDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO add points
                 if (mTaskViewModel.getDoneTask().getValue() == null || mTaskViewModel.getDoneTask().getValue() == 0) {
                     mTaskViewModel.setDoneTask(1);
                 } else {
@@ -405,23 +414,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         });
 
 
-//        mPlacePicker.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-//
-//                try {
-//                    startPicking(builder.build(getActivity()));
-//                } catch (GooglePlayServicesRepairableException e) {
-//                    e.printStackTrace();
-//                } catch (GooglePlayServicesNotAvailableException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-
-
-//        onClickNavigate(mAddEventButton, R.id.action_map_fragment_to_create_event_fragment);
         mAddEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -451,12 +443,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                 mEventList.clear();
 
                 for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
-                    Event mEvent = eventSnapshot.getValue(Event.class);
-                    mEventList.add(mEvent);
-                    LatLng latLng = new LatLng(mEvent.getPosition().getLatitude(), mEvent.getPosition().getLongitude());
+                    Event event = eventSnapshot.getValue(Event.class);
+                    //remove old events
+                    if (event.getDate().before(Calendar.getInstance().getTime())) {
+                        mFirebaseDatabse.child(event.getUid()).removeValue();
+                    } else {
+                        mEventList.add(event);
 
-                    MarkerOptions markerOptions = new MarkerOptions().position(latLng);
-                    mGoogleMap.addMarker(markerOptions);
+                        LatLng latLng = new LatLng(event.getPosition().getLatitude(), event.getPosition().getLongitude());
+                        MarkerOptions markerOptions = new MarkerOptions().position(latLng);
+                        mGoogleMap.addMarker(markerOptions);
+                    }
                 }
             }
 
@@ -554,25 +551,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
     }
 
     public String getAddress(double lat, double lng) {
-        String add = "";
+        String addressString = "";
         Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
-            Address obj = addresses.get(0);
-            add = obj.getAddressLine(0);
-//            add = add + "\n" + obj.getCountryName();
-//            add = add + "\n" + obj.getCountryCode();
-//            add = add + "\n" + obj.getAdminArea();
-//            add = add + "\n" + obj.getPostalCode();
-//            add = add + "\n" + obj.getSubAdminArea();
-//            add = add + "\n" + obj.getLocality();
-//            add = add + "\n" + obj.getSubThoroughfare();
-            Log.e(TAG, "getAddress: " + add);
+
+            if (addresses.get(0).getThoroughfare() != null) {
+                addressString += addresses.get(0).getThoroughfare();
+//                street = addresses.get(0).getThoroughfare();
+            }
+            if (addresses.get(0).getSubThoroughfare() != null) {
+                addressString += " " + addresses.get(0).getSubThoroughfare();
+//                houseNumber = addresses.get(0).getSubThoroughfare();
+            }
+            if (addresses.get(0).getLocality() != null) {
+                if (addresses.get(0).getSubThoroughfare() != null) {
+                    addressString += ", ";
+                }
+                addressString += addresses.get(0).getLocality();
+//                city = addresses.get(0).getLocality();
+            }
+
+            Log.e(TAG, "getAddress: " + addressString);
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-        return add;
+        return addressString;
     }
 
 
@@ -640,9 +645,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                         CreateEventFragment cef = new CreateEventFragment();
 
                         MaterialDialog.Builder eventDialogBuilder = new MaterialDialog.Builder(getContext());
-//                        eventDialogBuilder.setTitle(event.getTitle());
-                        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_event_information,null);
-                        eventDialogBuilder.customView(dialogView,false);
+                        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_event_information, null);
+                        eventDialogBuilder.customView(dialogView, false);
                         eventDialogBuilder.positiveText(goingToEventString);
                         eventDialogBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
@@ -683,12 +687,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                         EditText creatorView = dialogView.findViewById(R.id.etv_creator_dialog);
                         TextView participantsView = dialogView.findViewById(R.id.tv_participants_dialog);
                         Button editButton = dialogView.findViewById(R.id.btn_to_change_event_dialog);
-//                        Button goingButton = dialogView.findViewById(R.id.btn_going_dialog);
-//                        Button cancelButton = dialogView.findViewById(R.id.btn_cancel_dialog);
+
 
                         titleView.setText(event.getTitle());
                         descriptionView.setText(event.getDescription());
-                        dateLocationView.setText(event.getDate().toGMTString());
+                        dateLocationView.setText(simpleDateFormat.format(event.getDate()));
                         creatorView.setText(event.getCreator().getUsername());
 
                         MaterialDialog eventDialog = eventDialogBuilder.build();

@@ -138,7 +138,7 @@
     <string name="_12">12</string>
     <string name="location">========== Location ==========</string>
     <string name="set_date_and_time">Set Date and Time</string>
-    <string name="create_event">Create Event</string>
+    <string name="create_event">Create event</string>
     <string name="ok">OK</string>
     <string name="well_done">Well Done!!!</string>
     <string name="exit">Exit</string>
@@ -211,6 +211,9 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="event_name">Event name</string>
+    <string name="field_must_be_filled">Field must be filled</string>
+    <string name="please_choose_date">Please choose date and time</string>
+    <string name="edit_event">Edit event</string>
 
 
 </resources>

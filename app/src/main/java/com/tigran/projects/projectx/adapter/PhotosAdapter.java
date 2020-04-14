@@ -3,9 +3,11 @@ package com.tigran.projects.projectx.adapter;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -61,12 +64,9 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mOnRvItemClickListener !=null)
-                {
-                    mOnRvItemClickListener.onItemClicked(holder.photo.getDrawable());
-                }
-                else if(mOnOtherRvItemClickListener !=null)
-                {
+                if (mOnRvItemClickListener != null) {
+                    mOnRvItemClickListener.onItemClicked(holder.photo.getDrawable(), url);
+                } else if (mOnOtherRvItemClickListener != null) {
                     mOnOtherRvItemClickListener.onItemClicked(holder.photo.getDrawable());
                 }
             }
@@ -75,7 +75,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(mOnRvItemClickListener != null) {
+                if (mOnRvItemClickListener != null) {
                     showAllCheckBoxes(true);
                     mOnRvItemClickListener.onItemLongClicked(mData.get(position));
                 }
@@ -98,7 +98,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
         holder.checkBox.setVisibility(isDeleteMode ? View.VISIBLE : View.GONE);
 
 
-        setPhoto(url, holder.photo);
+        setPhoto(url, holder);
     }
 
     public void showAllCheckBoxes(boolean show) {
@@ -113,7 +113,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
 
     String res;
 
-    public void setPhoto(String url, ImageView imageView) {
+    public void setPhoto(String url, PhotosViewHolder holder) {
 
         Log.e(TAG, "setPhoto: " + url);
 
@@ -128,7 +128,9 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
                             @Override
                             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
 //                                mProgressBar.setVisibility(View.GONE);
-                                Toast.makeText(context, "FAILED " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                holder.photo.setImageDrawable(context.getDrawable(R.drawable.ic_broken_image));
+                                holder.progressBar.setVisibility(View.GONE);
+//                                Toast.makeText(context, "FAILED " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 Log.d("EDIT PROFILE", e.getMessage());
                                 return false;
                             }
@@ -136,10 +138,11 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
                             @Override
                             public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
 //                                mProgressBar.setVisibility(View.GONE);
+                                holder.progressBar.setVisibility(View.GONE);
                                 return false;
                             }
                         })
-                        .into(imageView);
+                        .into(holder.photo);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -165,12 +168,13 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
     public class PhotosViewHolder extends RecyclerView.ViewHolder {
         public ImageView photo;
         public CheckBox checkBox;
+        public ProgressBar progressBar;
 
         public PhotosViewHolder(final View itemView) {
             super(itemView);
             photo = itemView.findViewById(R.id.iv_photo_adapter);
             checkBox = itemView.findViewById(R.id.cb_photos);
-
+            progressBar = itemView.findViewById(R.id.pb_photo_adapter);
         }
     }
 
@@ -179,7 +183,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
     }
 
     public interface OnRvItemClickListener {
-        void onItemClicked(Drawable resource);
+        void onItemClicked(Drawable resource, String photoId);
 
         void onItemLongClicked(String item);
 

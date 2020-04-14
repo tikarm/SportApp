@@ -3,14 +3,17 @@ package com.tigran.projects.projectx.adapter;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.PagerAdapter;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -33,7 +36,7 @@ public class ViewPagerAdapter extends PagerAdapter {
     private Context context;
     private List<String> imagesList = new ArrayList<>();
 
-    public ViewPagerAdapter(Context context,List<String> list) {
+    public ViewPagerAdapter(Context context, List<String> list) {
 
         this.context = context;
         imagesList = list;
@@ -51,7 +54,8 @@ public class ViewPagerAdapter extends PagerAdapter {
 
         View view = LayoutInflater.from(context).inflate(R.layout.item_pager, null);
         ImageView imageView = view.findViewById(R.id.iv_image);
-        setImage(imagesList.get(position),imageView);
+        ProgressBar progressBar = view.findViewById(R.id.pb_image);
+        setImage(imagesList.get(position), imageView, progressBar);
         container.addView(view);
         return view;
     }
@@ -85,7 +89,7 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     String res;
 
-    public void setImage(String url, ImageView imageView) {
+    public void setImage(String url, ImageView imageView, ProgressBar progressBar) {
 
         DBUtil.getRefImages(url).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -97,13 +101,15 @@ public class ViewPagerAdapter extends PagerAdapter {
                             .listener(new RequestListener<Drawable>() {
                                 @Override
                                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                    Toast.makeText(context, "FAILED " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(context, "FAILED " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                     Log.d("EDIT PROFILE", e.getMessage());
+                                    progressBar.setVisibility(View.GONE);
                                     return false;
                                 }
 
                                 @Override
                                 public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                    progressBar.setVisibility(View.GONE);
                                     return false;
                                 }
                             })

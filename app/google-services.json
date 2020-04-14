@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:54450711482:android:4d387ea025aef436",
         "android_client_info": {
-          "package_name": "com.har8yun.homeworks.projectx"
+          "package_name": "com.tigran.projects.projectx"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "54450711482-ghhiu4in45thnooplakmiijl1g2kjrsq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.har8yun.homeworks.projectx",
+            "package_name": "com.tigran.projects.projectx",
             "certificate_hash": "05a0c956967513525e7e03fa3290669ce16a7bad"
           }
         },

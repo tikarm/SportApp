@@ -24,4 +24,14 @@
         app:layout_constraintEnd_toEndOf="@id/iv_photo_adapter"
         android:visibility="invisible"/>
 
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pb_photo_adapter"
+        app:layout_constraintTop_toTopOf="@id/iv_photo_adapter"
+        app:layout_constraintBottom_toBottomOf="@id/iv_photo_adapter"
+        app:layout_constraintStart_toStartOf="@id/iv_photo_adapter"
+        app:layout_constraintEnd_toEndOf="@id/iv_photo_adapter"
+        android:visibility="visible"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

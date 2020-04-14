@@ -7,8 +7,8 @@ android {
     }
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.har8yun.homeworks.projectx"
-        minSdkVersion 21
+        applicationId 'com.tigran.projects.projectx'
+        minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"

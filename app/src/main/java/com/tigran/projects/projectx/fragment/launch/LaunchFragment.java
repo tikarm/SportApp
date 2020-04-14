@@ -46,6 +46,7 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +73,9 @@ public class LaunchFragment extends Fragment implements OnMapReadyCallback {
 
     //event
     List<Event> mEventList = new ArrayList<>();
+
+    //date format
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy, HH:mm");
 
 
     //constructor
@@ -163,12 +167,11 @@ public class LaunchFragment extends Fragment implements OnMapReadyCallback {
                         EditText descriptionView = dialogView.findViewById(R.id.etv_description_dialog);
                         EditText dateLocationView = dialogView.findViewById(R.id.etv_date_location_dialog);
                         EditText creatorView = dialogView.findViewById(R.id.etv_creator_dialog);
-                        TextView participantsView = dialogView.findViewById(R.id.tv_participants_dialog);
 
 
                         titleView.setText(event.getTitle());
                         descriptionView.setText(event.getDescription());
-                        dateLocationView.setText(event.getDate().toGMTString());
+                        dateLocationView.setText(simpleDateFormat.format(event.getDate()));
                         creatorView.setText(event.getCreator().getUsername());
 
                         eventDialog.show();

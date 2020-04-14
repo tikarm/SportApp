@@ -31,6 +31,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -64,6 +65,9 @@ public class CreateEventFragment extends Fragment {
 
     //calendar
     private Calendar cal = Calendar.getInstance();
+
+    //date format
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy, HH:mm");
 
     //navigation
     private NavController mNavController;
@@ -131,7 +135,6 @@ public class CreateEventFragment extends Fragment {
         mDateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pass3 = true;
                 chooseDate();
             }
         });
@@ -180,30 +183,43 @@ public class CreateEventFragment extends Fragment {
     }
 
     private void chooseDate() {
-        final Calendar c = Calendar.getInstance();
-        int mYear = c.get(Calendar.YEAR);
-        int mMonth = c.get(Calendar.MONTH);
-        int mDay = c.get(Calendar.DAY_OF_MONTH);
+        Calendar calendar = Calendar.getInstance();
+        int year, month, day;
+        if (mEvent.getDate() != null) {
+            calendar.setTime(mEvent.getDate());
+        }
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
         DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 mEvent.setDate(new Date());
-                cal.setTime(mEvent.getDate());
+//                cal.setTime(mEvent.getDate());
                 cal.set(Calendar.YEAR, year);
                 cal.set(Calendar.MONTH, monthOfYear);
                 cal.set(Calendar.DATE, dayOfMonth);
                 mEvent.setDate(cal.getTime());
                 chooseTime();
             }
-        }, mYear, mMonth, mDay);
+        }, year, month, day);
+        datePickerDialog.getDatePicker().setMinDate(new Date().getTime());
+
         datePickerDialog.show();
 
     }
 
     private void chooseTime() {
-        Calendar mCurrentTime = Calendar.getInstance();
-        int hour = mCurrentTime.get(Calendar.HOUR_OF_DAY);
-        int minute = mCurrentTime.get(Calendar.MINUTE);
+        Calendar calendar = Calendar.getInstance();
+        int hour, minute;
+        if (mEvent.getDate() != null) {
+            calendar.setTime(mEvent.getDate());
+            calendar.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR_OF_DAY));
+            calendar.set(Calendar.MINUTE, cal.get(Calendar.MINUTE));
+        }
+        hour = calendar.get(Calendar.HOUR_OF_DAY);
+        minute = calendar.get(Calendar.MINUTE);
+
         TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -212,8 +228,8 @@ public class CreateEventFragment extends Fragment {
                 cal.set(Calendar.MINUTE, minute);
                 mEvent.setDate(cal.getTime());
                 mEventViewModel.setEvent(mEvent);
-                SimpleDateFormat simpleDateformat2 = new SimpleDateFormat("MMM dd, hh:mm");
-                mDateView.setText(simpleDateformat2.format(mEvent.getDate()));
+                mDateView.setText(simpleDateFormat.format(mEvent.getDate()));
+                pass3 = true;
             }
         }, hour, minute, true);
         timePickerDialog.show();
@@ -234,20 +250,25 @@ public class CreateEventFragment extends Fragment {
     private void initEvent() {
         mEvent.setCreator(mCurrentUser);
         if (mTitleView.getText().toString().isEmpty()) {
-            mTitleView.setError("Field must be filled");
-
+            mTitleView.setError(getResources().getString(R.string.field_must_be_filled));
             pass1 = false;
+            return;
 
         } else {
             mEvent.setTitle(mTitleView.getText().toString());
             pass1 = true;
         }
         if (mDescriptionView.getText().toString().isEmpty()) {
-            mDescriptionView.setError("Field must be filled");
+            mDescriptionView.setError(getResources().getString(R.string.field_must_be_filled));
             pass2 = false;
+            return;
         } else {
             mEvent.setDescription(mDescriptionView.getText().toString());
             pass2 = true;
+        }
+        if (!pass3) {
+            Toast.makeText(getContext(), getResources().getString(R.string.please_choose_date), Toast.LENGTH_SHORT).show();
+            return;
         }
 
         if (pass1 && pass2 && pass3) {
@@ -261,8 +282,8 @@ public class CreateEventFragment extends Fragment {
     private void initEditViews() {
         mTitleView.setText(mEvent.getTitle());
         mDescriptionView.setText(mEvent.getDescription());
-        mDateView.setText(mEvent.getDate().toString());
-        mSaveButton.setText("Save Changes");
+        mDateView.setText(simpleDateFormat.format(mEvent.getDate()));
+        mSaveButton.setText(getResources().getString(R.string.save_changes));
     }
 
     private void editEvent() {
@@ -297,7 +318,7 @@ public class CreateEventFragment extends Fragment {
         activity.setSupportActionBar(mToolbarCreateEvent);
         if (isEdit) {
             setHasOptionsMenu(true);
-            activity.getSupportActionBar().setTitle("Edit Event");
+            activity.getSupportActionBar().setTitle(getResources().getString(R.string.edit_event));
         }
     }
 
