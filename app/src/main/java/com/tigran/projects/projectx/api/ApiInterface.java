@@ -11,7 +11,9 @@ public interface ApiInterface {
     Call<News> getNews(
             @Query("country") String country,
             @Query("category") String category,
-            @Query("apiKey") String apiKey
+            @Query("apiKey") String apiKey,
+            @Query("page") int page,
+            @Query("pageSize") int size
     );
 
 }

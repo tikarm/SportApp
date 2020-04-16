@@ -1,11 +1,14 @@
 package com.tigran.projects.projectx.fragment.news;
 
 import android.os.Bundle;
+
+import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +23,7 @@ import com.tigran.projects.projectx.api.ApiClient;
 import com.tigran.projects.projectx.api.ApiInterface;
 import com.tigran.projects.projectx.model.Article;
 import com.tigran.projects.projectx.model.News;
+import com.tigran.projects.projectx.util.CustomScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +42,7 @@ import static com.google.android.gms.common.util.CollectionUtils.setOf;
 public class NewsFragment extends Fragment {
 
     //static vars
-    public static final String API_KEY = "7999da2a619a463aa9f484f093cbffe5";
+    public static final String API_KEY = "65e92264bb9f4960a49d934c9e2051a9";
     public static final String TAG = MainActivity.class.getSimpleName();
 
     private List<Article> mArticles = new ArrayList<>();
@@ -49,6 +53,9 @@ public class NewsFragment extends Fragment {
     //views
     private ProgressBar mProgressBar;
 //    private Toolbar mToolbarNews;
+
+    //variables
+    private boolean isLastPage = false;
 
     //navigation
     private NavController mNavController;
@@ -65,18 +72,26 @@ public class NewsFragment extends Fragment {
 
         setNewsToolbar();
         setNavigationComponent();
-        initRecyclerView();
+//        initRecyclerView();
 
-        LoadJson();
+        loadJson(1);
 
         return view;
     }
 
     private void initRecyclerView() {
+        layoutManager = new LinearLayoutManager(getContext());
+        CustomScrollListener scrollListener = new CustomScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                loadJson(page);
+            }
+        };
+
         mNewsAdapter = new NewsAdapter(mArticles, getContext());
         mRecyclerView.setAdapter(mNewsAdapter);
-        layoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.addOnScrollListener(scrollListener);
     }
 
 
@@ -86,9 +101,9 @@ public class NewsFragment extends Fragment {
 //        mToolbarNews = view.findViewById(R.id.toolbar_news);
     }
 
-    private void LoadJson() {
+    private void loadJson(int page) {
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<News> call = apiInterface.getNews("gb", "sports", API_KEY);
+        Call<News> call = apiInterface.getNews("gb", "sports", API_KEY, page, 100);
         call.enqueue(new Callback<News>() {
             @Override
             public void onResponse(Call<News> call, Response<News> response) {
@@ -97,11 +112,14 @@ public class NewsFragment extends Fragment {
                         mArticles.clear();
                     }
                     mArticles = response.body().getArticle();
-                    initRecyclerView();
-                    mNewsAdapter.notifyDataSetChanged();
+                    if (mNewsAdapter == null) {
+                        initRecyclerView();
+                    } else {
+                        mNewsAdapter.swapData(mArticles);
+                    }
                     mProgressBar.setVisibility(View.GONE);
                 } else {
-                    Toast.makeText(getContext(), "No result", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "onResponse: No result");
                 }
             }
 

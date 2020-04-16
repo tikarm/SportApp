@@ -127,7 +127,6 @@ public class PhotosFragment extends Fragment {
         mRecyclerView.setAdapter(mPhotosAdapter);
 
         mPhotosAdapter.setOnRvItemClickListener(new PhotosAdapter.OnRvItemClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onItemClicked(Drawable resource, String url) {
 
@@ -282,7 +281,6 @@ public class PhotosFragment extends Fragment {
         mBottomNavigationView.setVisibility(View.GONE);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public void removeForeground()
     {
         mLayout.setForeground(null);

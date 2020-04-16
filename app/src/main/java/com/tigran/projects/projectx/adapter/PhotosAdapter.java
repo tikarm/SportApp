@@ -67,7 +67,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
                 if (mOnRvItemClickListener != null) {
                     mOnRvItemClickListener.onItemClicked(holder.photo.getDrawable(), url);
                 } else if (mOnOtherRvItemClickListener != null) {
-                    mOnOtherRvItemClickListener.onItemClicked(holder.photo.getDrawable());
+                    mOnOtherRvItemClickListener.onItemClicked(holder.photo.getDrawable(),url);
                 }
             }
         });
@@ -195,6 +195,6 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
     }
 
     public interface OnOtherRvItemClickListener {
-        void onItemClicked(Drawable resource);
+        void onItemClicked(Drawable resource,String photoId);
     }
 }
