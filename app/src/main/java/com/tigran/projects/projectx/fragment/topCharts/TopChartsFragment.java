@@ -2,18 +2,20 @@ package com.tigran.projects.projectx.fragment.topCharts;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.google.android.material.tabs.TabLayout;
+
 import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,9 +23,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tigran.projects.projectx.R;
-import com.tigran.projects.projectx.adapter.ChartsAdapter;
+import com.tigran.projects.projectx.adapter.TabAdapter;
 import com.tigran.projects.projectx.model.User;
 import com.tigran.projects.projectx.model.UserViewModel;
+import com.tigran.projects.projectx.preferences.SaveSharedPreferences;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,9 +35,8 @@ import java.util.List;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+import androidx.viewpager.widget.ViewPager;
 
 import static com.google.android.gms.common.util.CollectionUtils.setOf;
 import static com.tigran.projects.projectx.fragment.launch.SignInFragment.DATABASE_PATH_NAME;
@@ -46,7 +48,7 @@ public class TopChartsFragment extends Fragment {
     private static final String TAG = "TopChartsFragment";
     public static final String PULL_UPS = "Pull-ups";
     public static final String PUSH_UPS = "Push-ups";
-    public static final String PARALLEL_DIPS = "Parellel Dips";
+    public static final String PARALLEL_DIPS = "Parallel Dips";
     public static final String JUGGLING = "Juggling";
     public static final String POINTS = "Points";
 
@@ -55,18 +57,25 @@ public class TopChartsFragment extends Fragment {
     private Fragment mNavHostFragment;
 
     //views
-    private Toolbar mToolbarTopCharts;
     private TabLayout mTabLayout;
-    private RecyclerView mRecyclerView;
+    private ViewPager mViewPager;
+    private View view;
+    private ProgressBar mProgressBar;
 
     //adapter
-    private ChartsAdapter mChartsAdapter;
+    private TabAdapter mTabAdapter;
 
     //Firebase
     private DatabaseReference mFirebaseDatabse;
 
     //viewmodel
     private UserViewModel mUserViewModel;
+
+    //fragments
+    private PullUpsFragment mPullUpsFragment;
+    private PushUpsFragment mPushUpsFragment;
+    private ParallelDipsFragment mParallelDipsFragment;
+    private JugglingFragment mJugglingFragment;
 
     //user
     List<User> mUserList = new ArrayList<>();
@@ -79,6 +88,8 @@ public class TopChartsFragment extends Fragment {
     List<User> mJugglingList = new ArrayList<>();
     List<User> mPointsList = new ArrayList<>();
 
+    private SaveSharedPreferences sharedPreferences;
+
     //constructor
     public TopChartsFragment() {
     }
@@ -86,7 +97,7 @@ public class TopChartsFragment extends Fragment {
     //************************************ LIFECYCLE METHODS ****************************************
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_top_charts, container, false);
+        view = inflater.inflate(R.layout.fragment_top_charts, container, false);
 
         mUserViewModel = ViewModelProviders.of(getActivity()).get(UserViewModel.class);
         mUserViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<User>() {
@@ -100,87 +111,94 @@ public class TopChartsFragment extends Fragment {
         mFirebaseDatabse = FirebaseDatabase.getInstance().getReference(DATABASE_PATH_NAME);
         getUsersFromFirebase();
         initViews(view);
-        initRecyclerView(mPullUpsList, PULL_UPS);
-        setTopChartsToolbar();
         setNavigationComponent();
+
+        mProgressBar.setVisibility(View.GONE);
+        setTabAdapter();
 
         return view;
     }
 
     //************************************** METHODS ********************************************
     private void initViews(View view) {
-        mToolbarTopCharts = view.findViewById(R.id.toolbar_top_charts);
-        mTabLayout = view.findViewById(R.id.tabs);
-        mRecyclerView = view.findViewById(R.id.rv_charts);
         mNavHostFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-
-        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case 0:
-                        initRecyclerView(mPullUpsList, PULL_UPS);
-                        break;
-                    case 1:
-                        initRecyclerView(mPushUpsList, PUSH_UPS);
-                        break;
-                    case 2:
-                        initRecyclerView(mParallelDipsList, PARALLEL_DIPS);
-                        break;
-                    case 3:
-                        initRecyclerView(mJugglingList, JUGGLING);
-                        break;
-                    case 4:
-                        initRecyclerView(mPointsList, POINTS);
-                        break;
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
-        });
-
-
-
+        mViewPager = view.findViewById(R.id.vp_top_charts);
+        mProgressBar = view.findViewById(R.id.pb_top_charts);
     }
 
-    private void initRecyclerView(List<User> listToPass, String key) {
-        mChartsAdapter = new ChartsAdapter();
+    private void setTabAdapter() {
+        sharedPreferences = new SaveSharedPreferences();
+        mTabAdapter = new TabAdapter(getActivity().getSupportFragmentManager());
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        mRecyclerView.setAdapter(mChartsAdapter);
+        mPullUpsFragment = new PullUpsFragment(mPullUpsList, mUserList);
+        mPushUpsFragment = new PushUpsFragment(mPushUpsList, mUserList);
+        mParallelDipsFragment = new ParallelDipsFragment(mParallelDipsList, mUserList);
+        mJugglingFragment = new JugglingFragment(mJugglingList, mUserList);
 
-        sortItems(listToPass, key);
+        mTabAdapter.addFragment(mPullUpsFragment, getResources().getString(R.string.pull_ups));
+        mTabAdapter.addFragment(mPushUpsFragment, getResources().getString(R.string.push_ups));
+        mTabAdapter.addFragment(mParallelDipsFragment, getResources().getString(R.string.parallel_dips));
+        mTabAdapter.addFragment(mJugglingFragment, getResources().getString(R.string.juggling));
 
-        List<User> tenList = new ArrayList<>();
-        for (int i = 0; i < 10 && i < listToPass.size(); i++) {
-            tenList.add(listToPass.get(i));
-        }
+        mViewPager.setAdapter(mTabAdapter);
+        mViewPager.setCurrentItem(sharedPreferences.getTopChartsPage(getContext()));
+        addPageSelectListener();
+    }
 
-        mChartsAdapter.addItems(tenList, key);
+    private void setListeners() {
+        mTabLayout = view.findViewById(R.id.tabs);
+        mTabLayout.setupWithViewPager(mViewPager);
+//        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab) {
+//                switch (tab.getPosition()) {
+//                    case 0:
+//                        initRecyclerView(mPullUpsList, PULL_UPS);
+//                        break;
+//                    case 1:
+//                        initRecyclerView(mPushUpsList, PUSH_UPS);
+//                        break;
+//                    case 2:
+//                        initRecyclerView(mParallelDipsList, PARALLEL_DIPS);
+//                        break;
+//                    case 3:
+//                        initRecyclerView(mJugglingList, JUGGLING);
+//                        break;
+//                    case 4:
+//                        initRecyclerView(mPointsList, POINTS);
+//                        break;
+//                }
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {
+//            }
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {
+//            }
+//        });
+    }
 
-        mChartsAdapter.setOnRvItemClickListener(new ChartsAdapter.OnRvItemClickListener() {
+    private void addPageSelectListener() {
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onItemClicked(String uid) {
-                for (User user : mUserList) {
-                    if (user.getId().equals(uid)) {
-                        if (currentUser.getId().equals(uid)) {
-                            NavHostFragment.findNavController(mNavHostFragment).navigate(R.id.action_top_charts_fragment_to_my_profile_fragment);
-                        } else {
-                            mUserViewModel.setOtherUser(user);
-                            NavHostFragment.findNavController(mNavHostFragment).navigate(R.id.action_top_charts_fragment_to_other_profile_fragment);
-                        }
-                    }
-                }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                sharedPreferences.setTopChartsPage(getContext(), position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
 
             }
         });
     }
+
 
     private void getUsersFromFirebase() {
         mFirebaseDatabse.addValueEventListener(new ValueEventListener() {
@@ -214,7 +232,9 @@ public class TopChartsFragment extends Fragment {
                         }
                     }
                 }
-                initRecyclerView(mPushUpsList, PULL_UPS);
+                setListeners();
+                setTabAdapter();
+
             }
 
             @Override
@@ -223,7 +243,7 @@ public class TopChartsFragment extends Fragment {
         });
     }
 
-    private void sortItems(List<User> listToSort, String key) {
+    static void sortItems(List<User> listToSort, String key) {
 
         Collections.sort(listToSort, new Comparator<User>() {
             @Override
@@ -237,16 +257,11 @@ public class TopChartsFragment extends Fragment {
         });
     }
 
-    private void setTopChartsToolbar() {
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(mToolbarTopCharts);
-        setHasOptionsMenu(true);
-    }
 
     private void setNavigationComponent() {
         mNavController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(setOf(R.id.top_charts_fragment)).build();
-        NavigationUI.setupWithNavController(mToolbarTopCharts, mNavController, appBarConfiguration);
+//        NavigationUI.setupWithNavController(mToolbarTopCharts, mNavController, appBarConfiguration);
     }
 
 }

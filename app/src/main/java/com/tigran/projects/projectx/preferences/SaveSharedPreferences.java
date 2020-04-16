@@ -17,6 +17,7 @@ public class SaveSharedPreferences {
     public static final String ENABLED_TASKS = "enabled tasks";
     public static final String TIME = "time";
     public static final String BUILD_MUSCLES_LEVEL = "level";
+    public static final String TOP_CHARTS_PAGE = "top_charts_page";
 
     public static final String RED = "red";
 
@@ -104,5 +105,16 @@ public class SaveSharedPreferences {
         return mUser;
     }
 
+    public void setTopChartsPage(Context context, int page) {
+        SharedPreferences.Editor editor = getPreferences(context).edit();
+        editor.putInt(TOP_CHARTS_PAGE, page);
+        editor.apply();
+    }
+
+    public int getTopChartsPage(Context context) {
+        SharedPreferences.Editor editor = getPreferences(context).edit();
+        int page = getPreferences(context).getInt(TOP_CHARTS_PAGE, 0);
+        return page;
+    }
 
 }

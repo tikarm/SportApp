@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,10 +70,11 @@ public class ChartsAdapter extends RecyclerView.Adapter<ChartsAdapter.ChartsView
         holder.skillCount.setText(String.valueOf(user.getSkills().get(kkk)));
         if (user.getUserInfo() != null) {
             if (user.getUserInfo().getAvatar() != null) {
-                setAvatar(user.getUserInfo().getAvatar(), holder.avatar);
+                setAvatar(user.getUserInfo().getAvatar(), holder);
             }
             else {
                 holder.avatar.setImageResource(R.drawable.ic_person_outline_grey);
+                holder.progressBar.setVisibility(View.GONE);
             }
         }
     }
@@ -91,7 +93,7 @@ public class ChartsAdapter extends RecyclerView.Adapter<ChartsAdapter.ChartsView
 
     String res;
 
-    public void setAvatar(String url, ImageView imageView) {
+    public void setAvatar(String url, ChartsViewHolder holder) {
 
         DBUtil.getRefAvatars(url).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -112,10 +114,11 @@ public class ChartsAdapter extends RecyclerView.Adapter<ChartsAdapter.ChartsView
 
                                 @Override
                                 public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                    holder.progressBar.setVisibility(View.GONE);
                                     return false;
                                 }
                             })
-                            .into(imageView);
+                            .into(holder.avatar);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -133,12 +136,14 @@ public class ChartsAdapter extends RecyclerView.Adapter<ChartsAdapter.ChartsView
         public TextView username;
         public TextView skillCount;
         public ImageView avatar;
+        public ProgressBar progressBar;
 
         public ChartsViewHolder(final View itemView) {
             super(itemView);
             username = itemView.findViewById(R.id.tv_username_chart);
             skillCount = itemView.findViewById(R.id.tv_skill_count_chart);
             avatar = itemView.findViewById(R.id.iv_avatar_chart);
+            progressBar = itemView.findViewById(R.id.pb_avatar_chart);
         }
     }
 
