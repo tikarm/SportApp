@@ -2,11 +2,12 @@
 package com.tigran.projects.projectx.fragment.map;
 
 import android.Manifest;
-import android.app.Dialog;
+import android.app.Activity;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -40,9 +41,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
 
+import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
@@ -96,6 +101,10 @@ import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.EncodedPolyline;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.model.TravelMode;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.tigran.projects.projectx.R;
 import com.tigran.projects.projectx.adapter.PlaceAutocompleteAdapter;
 //import com.har8yun.homeworks.projectx.directionhelpers.FetchURL;
@@ -113,6 +122,7 @@ import com.tigran.projects.projectx.model.MyLatLng;
 import com.tigran.projects.projectx.model.User;
 import com.tigran.projects.projectx.preferences.SaveSharedPreferences;
 import com.tigran.projects.projectx.model.UserViewModel;
+import com.tigran.projects.projectx.util.GpsUtils;
 import com.tigran.projects.projectx.util.PermissionChecker;
 
 import java.io.IOException;
@@ -122,6 +132,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import androidx.navigation.fragment.NavHostFragment;
@@ -166,6 +177,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
     private Button mDoneButton;
     private TextView mDistanceView;
     private TextView mCaloriesView;
+    private Menu mBottomNavMenu;
+    private ImageView mClearSearchView;
 
     ConstraintSet constraintSet = new ConstraintSet();
 
@@ -353,6 +366,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         mDistanceView = v.findViewById(R.id.tv_distance_map);
         mCaloriesView = v.findViewById(R.id.tv_calories_map);
         mNavHostFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        mBottomNavMenu = mBottomNavigationView.getMenu();
+        mClearSearchView = v.findViewById(R.id.iv_clear_search_map_fragment);
 
 
         mapView = v.findViewById(R.id.mv_map);
@@ -393,8 +408,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                 .Builder(getContext())
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
-                .enableAutoManage(this.getActivity(), this)
+                .enableAutoManage(this.getActivity(), new Random().nextInt(3000), this)
                 .build();
+
 
         mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(getContext(), mGoogleApiClient, LAT_LNG_BOUNDS, null);
         mSearchView.setAdapter(mPlaceAutocompleteAdapter);
@@ -403,12 +419,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         mLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (PermissionChecker.hasLocationPermission(getContext())) {
+                if (PermissionChecker.hasLocationPermission(getContext()) && isLocationEnabled(getContext())) {
                     getDeviceLocation();
                     moveCamera(new LatLng(mDeviceLocation.getLatitude(), mDeviceLocation.getLongitude()), DEFAULT_ZOOM, MY_LOCATION);
                 } else {
-                    requestLocationPermissions();
-                    checkLocationPermission();
+//                    requestLocationPermissions();
+//                    checkLocationPermission();
+                    requestPermissions(getContext());
                 }
             }
         });
@@ -464,6 +481,54 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
 
     }
 
+    public static void requestPermissions(Context context) {
+        new GpsUtils(context).turnGPSOn(new GpsUtils.onGpsListener() {
+            @Override
+            public void gpsStatus(boolean isGPSEnable) {
+                // turn on GPS
+//                isGPS = isGPSEnable;
+            }
+        });
+
+
+        Dexter.withActivity((Activity) context)
+                .withPermissions(
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                ).withListener(new MultiplePermissionsListener() {
+
+
+            @Override
+            public void onPermissionsChecked(MultiplePermissionsReport report) {
+                if (report.isAnyPermissionPermanentlyDenied()) {
+                    requestPermissions(context);
+                }
+
+            }
+
+            @Override
+            public void onPermissionRationaleShouldBeShown(List<com.karumi.dexter.listener.PermissionRequest> permissions, PermissionToken token) {
+
+            }
+
+        }).check();
+    }
+
+    public static boolean isLocationEnabled(Context context) {
+        int locationMode = 0;
+        String locationProviders;
+
+        try {
+            locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+
+    }
 
     protected void requestLocationPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -521,10 +586,38 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                 return false;
             }
         });
+
+        mSearchView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().isEmpty()) {
+                    mClearSearchView.setVisibility(View.VISIBLE);
+                } else {
+                    mClearSearchView.setVisibility(View.GONE);
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         mMagnifyView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 geoLocate();
+            }
+        });
+        mClearSearchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSearchView.setText("");
             }
         });
     }
@@ -575,7 +668,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
             Log.e(TAG, "getAddress: " + addressString);
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
         return addressString;
     }
@@ -779,7 +871,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                 return true;
             }
         });
-
+        
     }
 
     private void updateUserInFirebase() {
@@ -1119,6 +1211,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
             float biasedValue = 0.435f;
             constraintSet.setVerticalBias(mCurrentLocationView.getId(), biasedValue);
             constraintSet.applyTo(mMainLayout);
+        }
+        if (mSearchView.isFocused()) {
+            mSearchView.clearFocus();
         }
     }
 

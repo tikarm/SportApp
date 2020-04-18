@@ -2,8 +2,10 @@ package com.tigran.projects.projectx.fragment.profile;
 
 import android.Manifest;
 import android.app.Dialog;
+
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,13 +15,16 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import androidx.fragment.app.Fragment;
 
 import androidx.appcompat.app.AlertDialog;
@@ -27,6 +32,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -156,10 +162,12 @@ public class MyProfileFragment extends Fragment {
         mUserViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
             public void onChanged(@Nullable final User user) {
-                setNavigationComponent(user);
-                mCurrentUser.setUserInfo(user.getUserInfo());
-                mCurrentUser = user;
-                fillViews();
+                if (user != null) {
+                    setNavigationComponent(user);
+                    mCurrentUser.setUserInfo(user.getUserInfo());
+                    mCurrentUser = user;
+                    fillViews();
+                }
             }
         });
     }
@@ -189,7 +197,7 @@ public class MyProfileFragment extends Fragment {
             @Override
             public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
                 if (destination.getId() == R.id.my_profile_fragment) {
-                    if (mCurrentUser.getUsername() != null) {
+                    if (mCurrentUser != null && mCurrentUser.getUsername() != null) {
                         NavHostFragment.findNavController(mNavHostFragment).getCurrentDestination().setLabel(user.getUsername());
                     }
                 }

@@ -107,6 +107,12 @@
             app:enterAnim="@anim/enter_from_right"
             app:popExitAnim="@anim/exit_to_right" />
 
+        <action
+            android:id="@+id/action_participants_fragment_to_map_fragment"
+            app:destination="@id/map_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right" />
+
     </fragment>
 
     <fragment

@@ -3,14 +3,17 @@ package com.tigran.projects.projectx.adapter;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +40,6 @@ public class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapte
     Context context;
 
     private List<User> mData = new ArrayList<>();
-
 
 
     private static ParticipantsAdapter.OnRvItemClickListener mOnRvItemClickListener;
@@ -67,10 +69,10 @@ public class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapte
         holder.username.setText(user.getUsername());
         if (user.getUserInfo() != null) {
             if (user.getUserInfo().getAvatar() != null) {
-                setAvatar(user.getUserInfo().getAvatar(), holder.avatar);
+                setAvatar(user.getUserInfo().getAvatar(), holder);
             } else {
                 holder.avatar.setImageResource(R.drawable.ic_person_outline_grey);
-                Log.e(TAG, "onBindViewHolder: YESSSSSS" );
+                holder.progressBar.setVisibility(View.GONE);
             }
         }
     }
@@ -85,8 +87,8 @@ public class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapte
         mData.addAll(items);
         notifyDataSetChanged();
     }
-    public void addItem(User user)
-    {
+
+    public void addItem(User user) {
         mData.add(user);
         notifyDataSetChanged();
     }
@@ -94,7 +96,7 @@ public class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapte
 
     String res;
 
-    public void setAvatar(String url, ImageView imageView) {
+    public void setAvatar(String url, ParticipantsViewHolder holder) {
 
         DBUtil.getRefAvatars(url).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -115,10 +117,11 @@ public class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapte
 
                                 @Override
                                 public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                    holder.progressBar.setVisibility(View.GONE);
                                     return false;
                                 }
                             })
-                            .into(imageView);
+                            .into(holder.avatar);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -135,6 +138,7 @@ public class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapte
         public ImageView avatar;
         public TextView textView;
         public TextView dots;
+        public ProgressBar progressBar;
 
         public ParticipantsViewHolder(final View itemView) {
             super(itemView);
@@ -142,6 +146,7 @@ public class ParticipantsAdapter extends RecyclerView.Adapter<ParticipantsAdapte
             avatar = itemView.findViewById(R.id.iv_avatar_chart);
             textView = itemView.findViewById(R.id.tv_skill_count_chart);
             dots = itemView.findViewById(R.id.tv_dots_chart);
+            progressBar = itemView.findViewById(R.id.pb_avatar_chart);
             textView.setVisibility(View.GONE);
             dots.setVisibility(View.GONE);
         }

@@ -352,9 +352,9 @@ public class PlaceAutocompleteAdapter
 
             if (!status.isSuccess()) {
 
-                Toast.makeText(getContext(), "Error contacting API: " + status.toString(),
-
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "Error contacting API: " + status.toString(),
+//
+//                        Toast.LENGTH_SHORT).show();
 
                 Log.e(TAG, "Error getting autocomplete prediction API call: " + status.toString());
 

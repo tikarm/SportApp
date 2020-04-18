@@ -1,7 +1,9 @@
 package com.tigran.projects.projectx.fragment.launch;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -90,7 +92,7 @@ public class LaunchFragment extends Fragment implements OnMapReadyCallback {
         initViews(view);
         changeDesignStyle();
 
-        requestPermissions();
+        requestPermissions(getContext());
 
         onClickNavigate(mSignInButton, R.id.action_launch_fragment_to_sign_in_fragment);
         onClickNavigate(mSignUpButton, R.id.action_launch_fragment_to_sign_up_fragment);
@@ -215,8 +217,8 @@ public class LaunchFragment extends Fragment implements OnMapReadyCallback {
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
-    public void requestPermissions() {
-        new GpsUtils(getContext()).turnGPSOn(new GpsUtils.onGpsListener() {
+    public static void requestPermissions(Context context) {
+        new GpsUtils(context).turnGPSOn(new GpsUtils.onGpsListener() {
             @Override
             public void gpsStatus(boolean isGPSEnable) {
                 // turn on GPS
@@ -225,7 +227,7 @@ public class LaunchFragment extends Fragment implements OnMapReadyCallback {
         });
 
 
-        Dexter.withActivity(getActivity())
+        Dexter.withActivity((Activity) context)
                 .withPermissions(
 //                        Manifest.permission.CAMERA,
 //                        Manifest.permission.READ_CONTACTS,

@@ -1,20 +1,28 @@
 package com.tigran.projects.projectx.fragment.event;
 
 
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,17 +38,16 @@ import com.tigran.projects.projectx.model.UserViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-
 
 public class ParticipantsFragment extends Fragment {
 
     private static final String TAG = "ParticipantsFragment";
 
     //views
-    private RecyclerView mRecyclerView ;
+    private RecyclerView mRecyclerView;
     private TextView mMessageView;
+    private Toolbar mToolbar;
+    private BottomNavigationView mBottomNavigationView;
 
     //navigation
     private NavController mNavController;
@@ -94,10 +101,9 @@ public class ParticipantsFragment extends Fragment {
             }
         });
         mCurrentEvent = mEventViewModel.getEvent().getValue();
-        if(mCurrentEvent.getParticipants() != null && mCurrentEvent.getParticipants().size() > 0) {
+        if (mCurrentEvent.getParticipants() != null && mCurrentEvent.getParticipants().size() > 0) {
             mUidList = mCurrentEvent.getParticipants();
-        }
-        else{
+        } else {
             mMessageView.setVisibility(View.VISIBLE);
         }
 
@@ -105,23 +111,24 @@ public class ParticipantsFragment extends Fragment {
         Log.d(TAG, "onCreateView: " + mParticipantsList.size());
 
         initViews(view);
+        setToolbar();
+        setNavigationComponent();
+        hideBotNavBar();
         return view;
     }
 
 
     //************************************** METHODS ********************************************
-    private void initViews(View view)
-    {
+    private void initViews(View view) {
         mRecyclerView = view.findViewById(R.id.rv_participants);
         mNavHostFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        mToolbar = view.findViewById(R.id.toolbar_participants);
+        mBottomNavigationView = getActivity().findViewById(R.id.bottom_navigation_view_main);
         Log.d(TAG, "initViews: " + mParticipantsList.size());
         initRecyclerView(view);
     }
 
-    private void initRecyclerView(View view)
-    {
-
-        Log.d(TAG, "initRecyclerView: BBBBBBBBBBBBBBBBBB");
+    private void initRecyclerView(View view) {
         mParticipantsAdapter = new ParticipantsAdapter();
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -149,8 +156,7 @@ public class ParticipantsFragment extends Fragment {
         });
     }
 
-    private void getUsersFromFirebase()
-    {
+    private void getUsersFromFirebase() {
 //        Log.d(TAG, "getUsersFromFirebase: " + mUidList.get(0));
         mFirebaseReference = FirebaseDatabase.getInstance().getReference("users");
         mFirebaseReference.addValueEventListener(new ValueEventListener() {
@@ -159,9 +165,8 @@ public class ParticipantsFragment extends Fragment {
                 mParticipantsList.clear();
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     User user = userSnapshot.getValue(User.class);
-                    for(String id : mUidList)
-                    {
-                        if(id.equals(user.getId())) {
+                    for (String id : mUidList) {
+                        if (id.equals(user.getId())) {
                             mParticipantsList.add(user);
                             mParticipantsAdapter.addItem(user);
                             Log.d(TAG, "onDataChange: " + mParticipantsList.size());
@@ -174,6 +179,22 @@ public class ParticipantsFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+    }
+
+    private void setToolbar() {
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.setSupportActionBar(mToolbar);
+    }
+
+    private void setNavigationComponent() {
+        mNavController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        NavigationUI.setupWithNavController(mToolbar, mNavController);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mCurrentEvent.getTitle());
+    }
+
+
+    private void hideBotNavBar() {
+        mBottomNavigationView.setVisibility(View.GONE);
     }
 
 }

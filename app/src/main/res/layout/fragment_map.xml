@@ -12,11 +12,11 @@
         android:id="@+id/layout_search_map"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/bg_rounded_corners_layout"
-        android:elevation="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/bg_rounded_toolbar"
+        android:elevation="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -32,6 +32,22 @@
             app:layout_constraintBottom_toBottomOf="@+id/et_search_map_fragment"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/et_search_map_fragment" />
+
+
+        <ImageView
+            android:id="@+id/iv_clear_search_map_fragment"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:clickable="true"
+            android:paddingEnd="16dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_close"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
 
         <AutoCompleteTextView
             android:id="@+id/et_search_map_fragment"
