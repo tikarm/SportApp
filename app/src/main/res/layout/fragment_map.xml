@@ -29,9 +29,9 @@
             android:layout_marginStart="18dp"
             android:contentDescription="@string/search"
             android:src="@drawable/ic_search"
-            app:layout_constraintBottom_toBottomOf="@+id/et_search_map_fragment"
+            app:layout_constraintBottom_toBottomOf="@+id/place_autocomplete"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/et_search_map_fragment" />
+            app:layout_constraintTop_toTopOf="@id/place_autocomplete" />
 
 
         <ImageView
@@ -49,8 +49,30 @@
             tools:visibility="visible" />
 
 
-        <AutoCompleteTextView
-            android:id="@+id/et_search_map_fragment"
+<!--        <AutoCompleteTextView-->
+<!--            android:id="@+id/et_search_map_fragment"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:layout_marginStart="8dp"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            android:layout_toEndOf="@id/iv_magnify_map_fragment"-->
+<!--            android:background="@android:drawable/screen_background_light_transparent"-->
+<!--            android:hint="@string/enter_address_city"-->
+<!--            android:imeOptions="actionSearch"-->
+<!--            android:singleLine="true"-->
+<!--            android:textColor="@android:color/black"-->
+<!--            android:textSize="18sp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toEndOf="@id/iv_magnify_map_fragment"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+        <fragment
+            android:id="@+id/place_autocomplete"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -69,6 +91,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_magnify_map_fragment"
             app:layout_constraintTop_toTopOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -152,8 +175,9 @@
         android:layout_marginStart="48dp"
         android:layout_marginEnd="48dp"
         android:layout_marginBottom="24dp"
-        android:background="@drawable/bg_rounded_corners_layout_btn"
         android:text="@string/done"
+        tools:visibility="visible"
+        android:backgroundTint="@android:color/white"
         android:textColor="@color/green"
         android:textSize="18sp"
         android:visibility="invisible"

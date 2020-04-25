@@ -2,12 +2,18 @@ package com.tigran.projects.projectx.fragment.launch;
 
 
 import android.app.ProgressDialog;
+
 import androidx.lifecycle.ViewModelProviders;
+
 import android.content.Context;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+
 import com.google.android.material.textfield.TextInputLayout;
+
 import androidx.fragment.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,6 +36,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tigran.projects.projectx.R;
+import com.tigran.projects.projectx.model.BuildMusclesViewModel;
+import com.tigran.projects.projectx.model.TaskViewModel;
+import com.tigran.projects.projectx.model.TodaysTaskInfo;
 import com.tigran.projects.projectx.model.User;
 import com.tigran.projects.projectx.model.UserViewModel;
 import com.tigran.projects.projectx.preferences.SaveSharedPreferences;
@@ -63,6 +72,10 @@ public class SignInFragment extends Fragment {
     //user
     private User mCurrentUser;
     private UserViewModel mUserViewModel;
+
+    //tasks
+    private TaskViewModel mTaskViewModel;
+    private BuildMusclesViewModel mBuildMusclesViewModel;
 
     //collections
     private List<User> mUserList = new ArrayList<>();
@@ -117,11 +130,13 @@ public class SignInFragment extends Fragment {
 
     //************************************** METHODS ********************************************
     private void openAccount(View v) {
+        saveTodaysTaskInfoInViewModel();
         sharedPreferences.setLoggedIn(getActivity(), true);
         mUserViewModel = ViewModelProviders.of(getActivity()).get(UserViewModel.class);
         mUserViewModel.setUser(mCurrentUser);
         NavOptions navOptions = new NavOptions.Builder().setPopUpTo(R.id.menu_item_log_out, true).build();
         Navigation.findNavController(v).navigate(R.id.action_fragment_sign_in_to_map_fragment, null, navOptions);
+        //TODO add today's task attributes to user AND THEN save it to view model
     }
 
 
@@ -192,8 +207,24 @@ public class SignInFragment extends Fragment {
         Log.d("SignIn", mCurrentUser.toString());
     }
 
-    private void hideKeyboard()
-    {
+    private void saveTodaysTaskInfoInViewModel() {
+        mTaskViewModel = ViewModelProviders.of(getActivity()).get(TaskViewModel.class);
+        mBuildMusclesViewModel = ViewModelProviders.of(getActivity()).get(BuildMusclesViewModel.class);
+
+        TodaysTaskInfo todaysTaskInfo = mCurrentUser.getTodaysTaskInfo();
+        if (todaysTaskInfo != null) {
+            mTaskViewModel.setDoneTask(todaysTaskInfo.getDoneTasksStatus());
+            mTaskViewModel.setLooseWeightTimestamp(todaysTaskInfo.getTimestampLooseWeight());
+            mTaskViewModel.setBuildMusclesTimestamp(todaysTaskInfo.getTimestampBuildMuscles());
+            sharedPreferences.setTask(getContext(), todaysTaskInfo.getDoneTasksStatus());
+            if (todaysTaskInfo.getBuildMusclesTaskName() != null) {
+                mBuildMusclesViewModel.setBuildMuscles(todaysTaskInfo.getBuildMusclesTaskName());
+            }
+            mBuildMusclesViewModel.setUnlockLevel(todaysTaskInfo.getBuildMusclesUnlockLevel());
+        }
+    }
+
+    private void hideKeyboard() {
         View view = getActivity().findViewById(android.R.id.content);
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);

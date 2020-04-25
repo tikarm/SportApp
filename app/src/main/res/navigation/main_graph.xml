@@ -55,6 +55,12 @@
             app:enterAnim="@anim/enter_from_right"
             app:popExitAnim="@anim/exit_to_right" />
         <action
+            android:id="@+id/action_map_fragment_to_loose_weight_map_fragment"
+            app:destination="@id/loose_weight_map_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right"
+            app:popUpTo="@id/loose_weight_map_fragment" />
+        <action
             android:id="@+id/action_map_fragment_to_build_muscles_fragment"
             app:destination="@id/build_muscles_fragment" />
 
@@ -70,6 +76,19 @@
             app:destination="@id/map_fragment"
             app:enterAnim="@anim/enter_from_right"
             app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loose_weight_map_fragment"
+        android:name="com.tigran.projects.projectx.fragment.tasks.LooseWeightMapFragment"
+        tools:layout="@layout/fragment_loose_weight_map">
+
+        <action
+            android:id="@+id/action_loose_weight_map_fragment_to_map_fragment"
+            app:destination="@id/map_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right"
+            app:popUpTo="@id/map_fragment" />
     </fragment>
 
     <!--______________________________________________________________ -->
@@ -159,10 +178,10 @@
             app:enterAnim="@anim/enter_from_right"
             app:popExitAnim="@anim/exit_to_right" />
     </fragment>
-<!--    <fragment-->
-<!--        android:id="@+id/launch_fragment"-->
-<!--        android:name="com.har8yun.homeworks.projectx.fragment.launch.LaunchFragment"-->
-<!--        tools:layout="@layout/fragment_launch" />-->
+    <!--    <fragment-->
+    <!--        android:id="@+id/launch_fragment"-->
+    <!--        android:name="com.har8yun.homeworks.projectx.fragment.launch.LaunchFragment"-->
+    <!--        tools:layout="@layout/fragment_launch" />-->
     <fragment
         android:id="@+id/launch_fragment"
         android:name="com.tigran.projects.projectx.fragment.launch.LaunchFragment"
@@ -234,7 +253,14 @@
         android:id="@+id/task_info_fragment"
         android:name="com.tigran.projects.projectx.fragment.tasks.TasksFragment"
         android:label="fragment_tasks"
-        tools:layout="@layout/fragment_tasks" />
+        tools:layout="@layout/fragment_tasks">
+        <action
+            android:id="@+id/action_task_info_fragment_to_loose_weight_map_fragment"
+            app:destination="@id/loose_weight_map_fragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:popExitAnim="@anim/exit_to_right"
+            app:popUpTo="@id/loose_weight_map_fragment" />
+    </fragment>
     <action
         android:id="@+id/action_global_map_fragment"
         app:destination="@id/map_fragment" />

@@ -1,22 +1,41 @@
 package com.tigran.projects.projectx.fragment.tasks;
 
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.tigran.projects.projectx.R;
 import com.tigran.projects.projectx.model.TaskViewModel;
+import com.tigran.projects.projectx.util.GpsUtils;
 
 import androidx.navigation.fragment.NavHostFragment;
+
+import java.util.List;
 
 import static com.tigran.projects.projectx.fragment.tasks.TasksFragment.BUILD_MUSCLES_INFO;
 import static com.tigran.projects.projectx.fragment.tasks.TasksFragment.LOOSE_WEIGHT_INFO;
@@ -64,7 +83,7 @@ public class TaskInfoFragment extends DialogFragment {
                             break;
                         case BUILD_MUSCLES_INFO:
                             mTitleView.setText("Build Muscles");
-                            mDescriptionView.setText("More strength is more muscles. Do this task every day and you will have great body." );
+                            mDescriptionView.setText("More strength is more muscles. Do this task every day and you will have great body.");
                             break;
                     }
                 }
@@ -78,14 +97,21 @@ public class TaskInfoFragment extends DialogFragment {
                 if (mTaskViewModel != null) {
                     switch (mTaskViewModel.getTask().getValue()) {
                         case LOOSE_WEIGHT_INFO:
-                            mTaskViewModel.setTask(LOOSE_WEIGHT);
+                            if (!isLocationEnabled(getContext())) {
+                                requestPermissions(getContext());
+                            } else {
+                                mTaskViewModel.setTask(LOOSE_WEIGHT);
+                                NavHostFragment.findNavController(mNavHostFragment).navigate(R.id.action_map_fragment_to_loose_weight_map_fragment);
+
+                                getDialog().dismiss();
+                            }
                             break;
                         case BUILD_MUSCLES_INFO:
                             NavHostFragment.findNavController(mNavHostFragment).navigate(R.id.action_map_fragment_to_build_muscles_fragment);
                             mTaskViewModel.setTask(null);
+                            getDialog().dismiss();
                             break;
                     }
-                    getDialog().dismiss();
                 }
             }
         });
@@ -101,4 +127,76 @@ public class TaskInfoFragment extends DialogFragment {
         mNavHostFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
     }
 
+    public void requestPermissions(Context context) {
+        new GpsUtils(context).turnGPSOn(new GpsUtils.onGpsListener() {
+            @Override
+            public void gpsStatus(boolean isGPSEnable) {
+                // turn on GPS
+//                isGPS = isGPSEnable;
+
+            }
+        });
+
+
+        Dexter.withActivity((Activity) context)
+                .withPermissions(
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                ).withListener(new MultiplePermissionsListener() {
+
+
+            @Override
+            public void onPermissionsChecked(MultiplePermissionsReport report) {
+//                if (report.isAnyPermissionPermanentlyDenied()) {
+//                    requestPermissions(context);
+//                }
+//                if (!isLocationEnabled(context)) {
+//                    requestPermissions(context);
+//                } else {
+//                    mTaskViewModel.setTask(LOOSE_WEIGHT);
+//                }
+
+
+            }
+
+            @Override
+            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+
+            }
+
+        }).check();
+    }
+
+    public static boolean isLocationEnabled(Context context) {
+        int locationMode = 0;
+
+        try {
+            locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Your GPS seems to be disabled, please enable it in order to continue.")
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
 }

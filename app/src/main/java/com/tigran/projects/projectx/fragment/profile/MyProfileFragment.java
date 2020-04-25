@@ -18,7 +18,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -61,7 +60,10 @@ import com.google.firebase.storage.UploadTask;
 import com.tigran.projects.projectx.R;
 import com.tigran.projects.projectx.activity.MainActivity;
 import com.tigran.projects.projectx.adapter.SkillItemRecyclerAdapter;
+import com.tigran.projects.projectx.model.BuildMusclesViewModel;
+import com.tigran.projects.projectx.model.EventViewModel;
 import com.tigran.projects.projectx.model.Skill;
+import com.tigran.projects.projectx.model.TaskViewModel;
 import com.tigran.projects.projectx.model.User;
 import com.tigran.projects.projectx.model.UserViewModel;
 import com.tigran.projects.projectx.preferences.SaveSharedPreferences;
@@ -132,6 +134,12 @@ public class MyProfileFragment extends Fragment {
     //user
     private User mCurrentUser;
     private UserViewModel mUserViewModel;
+
+    //view model
+    TaskViewModel mTaskViewModel;
+    BuildMusclesViewModel mBuildMusclesViewModel;
+    EventViewModel mEventViewModel;
+
 
     //firebase
     private DatabaseReference mDatebaseReference = FirebaseDatabase.getInstance().getReference("users");
@@ -566,14 +574,32 @@ public class MyProfileFragment extends Fragment {
 
 
     private void logOut() {
+        clearViewModelsAndPrefs();
         NavOptions navOptions = new NavOptions.Builder().setPopUpTo(R.id.map_fragment, true).build();
         Fragment mNavHostFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavHostFragment.findNavController(mNavHostFragment).navigate(R.id.launch_fragment, null, navOptions);
         sharedPreferences.setLoggedIn(getActivity(), false);
         mUserViewModel.setUser(mCurrentUser);
 
+
         FirebaseAuth.getInstance().signOut();
         Toast.makeText(getContext(), "Signed Out", Toast.LENGTH_SHORT).show();
+    }
+
+    private void clearViewModelsAndPrefs() {
+        mEventViewModel = ViewModelProviders.of(getActivity()).get(EventViewModel.class);
+        mTaskViewModel = ViewModelProviders.of(getActivity()).get(TaskViewModel.class);
+        mBuildMusclesViewModel = ViewModelProviders.of(getActivity()).get(BuildMusclesViewModel.class);
+        mEventViewModel.setEvent(null);
+        mTaskViewModel.setDoneTask(0);
+        mTaskViewModel.setLooseWeightTimestamp(null);
+        mTaskViewModel.setBuildMusclesTimestamp(null);
+        mTaskViewModel.setTask(null);
+        mBuildMusclesViewModel.setBuildMuscles(null);
+        mBuildMusclesViewModel.setUnlockLevel(null);
+        sharedPreferences.setTopChartsPage(getContext(), 0);
+        sharedPreferences.setBuildMusclesUnlockLevel(getContext(), 0);
+        sharedPreferences.setTask(getContext(), 0);
     }
 
 

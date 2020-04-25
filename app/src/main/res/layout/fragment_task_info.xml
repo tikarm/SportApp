@@ -12,9 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="12dp"
-        android:background="@drawable/bg_red_rounded_corners_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout6">
@@ -30,7 +28,7 @@
             android:text="@string/rich_red_marker_and_you_will_burn_110_calories_do_this_task_every_day_and_in_a_month_you_will_loose_1kg"
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryText"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -47,10 +45,11 @@
         android:text="@string/ok"
         android:textAllCaps="false"
         android:textColor="@color/colorPrimaryText"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold"
+        android:elevation="2dp"
+        android:backgroundTint="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout8" />
 
@@ -61,7 +60,6 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
-        android:background="@drawable/bg_red_rounded_corners_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -77,7 +75,7 @@
             android:text="@string/loose_weight"
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryText"
-            android:textSize="36sp"
+            android:textSize="30sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

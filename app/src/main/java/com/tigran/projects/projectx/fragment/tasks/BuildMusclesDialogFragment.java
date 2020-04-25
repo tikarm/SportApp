@@ -2,12 +2,15 @@ package com.tigran.projects.projectx.fragment.tasks;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.os.Bundle;
 import android.os.CountDownTimer;
+
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +18,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.tigran.projects.projectx.R;
 import com.tigran.projects.projectx.model.BuildMusclesViewModel;
 import com.tigran.projects.projectx.model.TaskViewModel;
+import com.tigran.projects.projectx.model.TodaysTaskInfo;
+import com.tigran.projects.projectx.model.User;
+import com.tigran.projects.projectx.model.UserViewModel;
 import com.tigran.projects.projectx.preferences.SaveSharedPreferences;
 
 import java.text.DecimalFormat;
@@ -39,6 +47,7 @@ public class BuildMusclesDialogFragment extends DialogFragment {
     private ImageView[] mImageViews = new ImageView[4];
     private ConstraintLayout mTimerLayout;
     private Button mStopButton;
+    private View mLastLineView;
 
     //timer
     private CountDownTimer mCountDownTimer;
@@ -50,6 +59,13 @@ public class BuildMusclesDialogFragment extends DialogFragment {
     //preferences
     SaveSharedPreferences sharedPreferences = new SaveSharedPreferences();
 
+    //user
+    private User mCurrentUser;
+    private UserViewModel mUserViewModel;
+
+    //firebase
+    DatabaseReference mFirebaseDatabaseUser;
+
     //constructor
     public BuildMusclesDialogFragment() {
     }
@@ -59,6 +75,15 @@ public class BuildMusclesDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_build_muscles_dialog, container, false);
         initViews(view);
+
+        mUserViewModel = ViewModelProviders.of(getActivity()).get(UserViewModel.class);
+        mUserViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(@Nullable User user) {
+                mCurrentUser = user;
+            }
+        });
+        mCurrentUser = mUserViewModel.getUser().getValue();
         mTaskViewModel = ViewModelProviders.of(getActivity()).get(TaskViewModel.class);
         mBuildMusclesViewModel = ViewModelProviders.of(getActivity()).get(BuildMusclesViewModel.class);
         mBuildMusclesViewModel.getBuildMuscles().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -86,7 +111,7 @@ public class BuildMusclesDialogFragment extends DialogFragment {
         });
 
         for (int i = 0; i < mDoneButtons.length - 1; i++) {
-            doneButtonAction(mDoneButtons[i], mDoneButtons[i + 1]);
+            doneButtonAction(mDoneButtons[i], mDoneButtons[i + 1], mImageViews[i]);
         }
 
         mDoneButtons[3].setOnClickListener(new View.OnClickListener() {
@@ -95,11 +120,11 @@ public class BuildMusclesDialogFragment extends DialogFragment {
                 mDoneButtons[3].setVisibility(View.INVISIBLE);
                 mImageViews[3].setVisibility(View.VISIBLE);
                 if (mBuildMusclesViewModel.getUnlockLevel().getValue() < 3) {
+                    setBuildMusclesTaskUnlockLevelForCurrentUserAndUpdateInFirebase(mBuildMusclesViewModel.getUnlockLevel().getValue() + 1);
                     mBuildMusclesViewModel.setUnlockLevel(mBuildMusclesViewModel.getUnlockLevel().getValue() + 1);
-                    sharedPreferences.setBuildMusclesUnlockLevel(getContext(),mBuildMusclesViewModel.getUnlockLevel().getValue() + 1);
+                    sharedPreferences.setBuildMusclesUnlockLevel(getContext(), mBuildMusclesViewModel.getUnlockLevel().getValue() + 1);
 
                 } else {
-                    getDialog().dismiss();
                     FragmentManager fm = getActivity().getSupportFragmentManager();
                     DoneDialogFragment tasksFragment = new DoneDialogFragment();
                     tasksFragment.show(fm, null);
@@ -107,12 +132,16 @@ public class BuildMusclesDialogFragment extends DialogFragment {
                     mSitUpsButton.setEnabled(false);
                     if (mTaskViewModel.getDoneTask().getValue() == null) {
                         mTaskViewModel.setDoneTask(2);
+                        setTodaysTaskInfoForCurrentUserAndUpdateInFirebase(2, System.currentTimeMillis() / 1000);
                     } else {
                         mTaskViewModel.setDoneTask(3);
+                        setTodaysTaskInfoForCurrentUserAndUpdateInFirebase(3, System.currentTimeMillis() / 1000);
                     }
-                    sharedPreferences.setTask(getContext(),mTaskViewModel.getDoneTask().getValue());
+                    mTaskViewModel.setBuildMusclesTimestamp(System.currentTimeMillis() / 1000);
+                    sharedPreferences.setTask(getContext(), mTaskViewModel.getDoneTask().getValue());
 
                 }
+                dismiss();
             }
         });
         mStopButton.setOnClickListener(new View.OnClickListener() {
@@ -143,15 +172,20 @@ public class BuildMusclesDialogFragment extends DialogFragment {
 
         mStopButton = view.findViewById(R.id.btn_stop_timer_muscles_dialog);
 
+        mLastLineView = view.findViewById(R.id.line4_mucles_dialog);
+
         mTimerLayout = view.findViewById(R.id.layout_timer_muscles_dialog);
     }
 
-    private void doneButtonAction(Button b1, Button b2) {
+    private void doneButtonAction(Button b1, Button b2, ImageView nextImageView) {
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mTimerLayout.setVisibility(View.VISIBLE);
+                mLastLineView.setVisibility(View.VISIBLE);
                 b1.setVisibility(View.INVISIBLE);
+                nextImageView.setVisibility(View.VISIBLE);
+
                 mCountDownTimer = new CountDownTimer(90000, 1000) {
                     int counter = 90;
 
@@ -177,15 +211,45 @@ public class BuildMusclesDialogFragment extends DialogFragment {
     private void openNextSet() {
         for (int i = 0; i < mDoneButtons.length; i++) {
             if (!mDoneButtons[i].isEnabled()) {
-                mImageViews[i].setVisibility(View.VISIBLE);
                 mDoneButtons[i].setTextColor(getResources().getColor(R.color.green));
                 mDoneButtons[i].setEnabled(true);
                 mCountDownTimer.cancel();
+                mLastLineView.setVisibility(View.GONE);
                 mTimerLayout.setVisibility(View.GONE);
                 break;
             }
         }
     }
 
+    private void updateUserInFirebase() {
+        mFirebaseDatabaseUser = FirebaseDatabase.getInstance().getReference("users");
+        mFirebaseDatabaseUser.child(mCurrentUser.getId()).setValue(mCurrentUser);
+    }
 
+    private void setTodaysTaskInfoForCurrentUserAndUpdateInFirebase(int doneTask, long timestamp) {
+        TodaysTaskInfo todaysTaskInfo;
+        if (mCurrentUser.getTodaysTaskInfo() == null) {
+            todaysTaskInfo = new TodaysTaskInfo();
+        } else {
+            todaysTaskInfo = mCurrentUser.getTodaysTaskInfo();
+        }
+        todaysTaskInfo.setDoneTasksStatus(doneTask);
+        todaysTaskInfo.setTimestampBuildMuscles(timestamp);
+        mCurrentUser.setTodaysTaskInfo(todaysTaskInfo);
+
+        updateUserInFirebase();
+    }
+
+    private void setBuildMusclesTaskUnlockLevelForCurrentUserAndUpdateInFirebase(long level) {
+        TodaysTaskInfo todaysTaskInfo;
+        if (mCurrentUser.getTodaysTaskInfo() == null) {
+            todaysTaskInfo = new TodaysTaskInfo();
+        } else {
+            todaysTaskInfo = mCurrentUser.getTodaysTaskInfo();
+        }
+        todaysTaskInfo.setBuildMusclesUnlockLevel(level);
+        mCurrentUser.setTodaysTaskInfo(todaysTaskInfo);
+
+        updateUserInFirebase();
+    }
 }

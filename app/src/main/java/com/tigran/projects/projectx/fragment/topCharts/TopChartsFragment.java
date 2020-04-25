@@ -128,7 +128,9 @@ public class TopChartsFragment extends Fragment {
 
     private void setTabAdapter() {
         sharedPreferences = new SaveSharedPreferences();
-        mTabAdapter = new TabAdapter(getActivity().getSupportFragmentManager());
+        if (getActivity() != null) {
+            mTabAdapter = new TabAdapter(getActivity().getSupportFragmentManager());
+        }
 
         mPullUpsFragment = new PullUpsFragment(mPullUpsList, mUserList);
         mPushUpsFragment = new PushUpsFragment(mPushUpsList, mUserList);

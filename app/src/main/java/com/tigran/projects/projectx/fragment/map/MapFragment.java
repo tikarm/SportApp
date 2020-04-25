@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -32,6 +33,9 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -119,6 +123,7 @@ import com.tigran.projects.projectx.model.Event;
 import com.tigran.projects.projectx.model.EventViewModel;
 import com.tigran.projects.projectx.model.TaskViewModel;
 import com.tigran.projects.projectx.model.MyLatLng;
+import com.tigran.projects.projectx.model.TodaysTaskInfo;
 import com.tigran.projects.projectx.model.User;
 import com.tigran.projects.projectx.preferences.SaveSharedPreferences;
 import com.tigran.projects.projectx.model.UserViewModel;
@@ -129,6 +134,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -138,6 +144,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import androidx.navigation.fragment.NavHostFragment;
 
 
+import static com.tigran.projects.projectx.fragment.news.NewsFragment.API_KEY;
 import static com.tigran.projects.projectx.fragment.tasks.TaskInfoFragment.LOOSE_WEIGHT;
 import static com.tigran.projects.projectx.fragment.tasks.DoneDialogFragment.LOOSE_WEIGHT_DONE;
 import static com.tigran.projects.projectx.util.NavigationHelper.onClickNavigate;
@@ -231,6 +238,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
     //date format
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy, HH:mm");
 
+    //place autocomplete
+    private AutocompleteSupportFragment placeAutocompleteSupportFragment;
+
 
     //constructor
     public MapFragment() {
@@ -244,19 +254,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
 //        if(mTaskViewModel!=null)
 //         mUser = sharedPreferences.getCurrentUser(getContext());
         initViews(view);
-        initSearch();
+//        initSearch();
         showBotNavBar();
         constraintSet.clone(getActivity(), R.layout.fragment_map);
         //getDeviceLocation();
+        initPlaceAutoComplete();
 
         mDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mTaskViewModel.getDoneTask().getValue() == null || mTaskViewModel.getDoneTask().getValue() == 0) {
                     mTaskViewModel.setDoneTask(1);
+                    setTodaysTaskInfoForCurrentUserAndUpdateInFirebase(1, System.currentTimeMillis() / 1000);
                 } else {
                     mTaskViewModel.setDoneTask(3);
+                    setTodaysTaskInfoForCurrentUserAndUpdateInFirebase(3, System.currentTimeMillis() / 1000);
                 }
+                mTaskViewModel.setLooseWeightTimestamp(System.currentTimeMillis() / 1000);
                 sharedPreferences.setTask(getContext(), mTaskViewModel.getDoneTask().getValue());
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 DoneDialogFragment tasksFragment = new DoneDialogFragment();
@@ -273,7 +287,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getDeviceLocation();
-//        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+//        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
         mUserViewModel = ViewModelProviders.of(getActivity()).get(UserViewModel.class);
         mUserViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
@@ -300,36 +314,36 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         super.onResume();
         mTaskViewModel = ViewModelProviders.of(getActivity()).get(TaskViewModel.class);
         mTaskViewModel.setDoneTask(sharedPreferences.getTask(getContext()));
-        mTaskViewModel.getTask().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                if (s != null) {
-                    switch (s) {
-                        case LOOSE_WEIGHT:
-                            if (mDeviceLocation != null) {
-                                mGoogleMap.clear();
-                                changeMapDesign();
-                                looseWeight();
-                                startUserLocationsRunnable();
-                                MapAnimator.getInstance().setPrimaryLineColor(getResources().getColor(R.color.colorPrimary));
-                                MapAnimator.getInstance().setSecondaryLineColor(getResources().getColor(R.color.colorPrimaryLight));
-                                MapAnimator.getInstance().animateRoute(mGoogleMap, path);
-                                mGoogleMap.addMarker(new MarkerOptions().position(destinationPosition).title("Destination"));
-                                break;
-                            }
-                        case LOOSE_WEIGHT_DONE:
-                            mGoogleApiClient.stopAutoManage(getActivity());
-                            mGoogleApiClient.disconnect();
-                            NavHostFragment.findNavController(mNavHostFragment).navigate(R.id.action_global_map_fragment);
-                            mTaskViewModel.setTask(null);
-                            stopLocationUpdates();
-
-                            mTaskViewModel.setTask(null);
-                            break;
-                    }
-                }
-            }
-        });
+//        mTaskViewModel.getTask().observe(getViewLifecycleOwner(), new Observer<String>() {
+//            @Override
+//            public void onChanged(@Nullable String s) {
+//                if (s != null) {
+//                    switch (s) {
+//                        case LOOSE_WEIGHT:
+//                            if (mDeviceLocation != null) {
+//                                mGoogleMap.clear();
+//                                changeMapDesign();
+//                                looseWeight();
+//                                startUserLocationsRunnable();
+//                                MapAnimator.getInstance().setPrimaryLineColor(getResources().getColor(R.color.colorPrimary));
+//                                MapAnimator.getInstance().setSecondaryLineColor(getResources().getColor(R.color.colorPrimaryLight));
+//                                MapAnimator.getInstance().animateRoute(mGoogleMap, path);
+//                                mGoogleMap.addMarker(new MarkerOptions().position(destinationPosition).title("Destination"));
+//                                break;
+//                            }
+//                        case LOOSE_WEIGHT_DONE:
+//                            mGoogleApiClient.stopAutoManage(getActivity());
+//                            mGoogleApiClient.disconnect();
+//                            NavHostFragment.findNavController(mNavHostFragment).navigate(R.id.action_global_map_fragment);
+//                            mTaskViewModel.setTask(null);
+//                            stopLocationUpdates();
+//
+//                            mTaskViewModel.setTask(null);
+//                            break;
+//                    }
+//                }
+//            }
+//        });
 
     }
 
@@ -355,7 +369,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         mAddEventButton = v.findViewById(R.id.fab_add_event_map);
         mMainLayout = v.findViewById(R.id.layout_main_map);
         mLocationButton = v.findViewById(R.id.fab_my_location_map);
-        mSearchView = v.findViewById(R.id.et_search_map_fragment);
+//        mSearchView = v.findViewById(R.id.et_search_map_fragment);
         mMagnifyView = v.findViewById(R.id.iv_magnify_map_fragment);
         mTasksButton = v.findViewById(R.id.fab_tasks_map);
         mExitButton = v.findViewById(R.id.btn_exit_map);
@@ -381,6 +395,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         mTasksButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                requestPermissions(getContext());
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 TasksFragment tasksFragment = new TasksFragment();
                 tasksFragment.show(fm, null);
@@ -395,11 +410,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         mExitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mGoogleApiClient.stopAutoManage(getActivity());
-                mGoogleApiClient.disconnect();
-                NavHostFragment.findNavController(mNavHostFragment).navigate(R.id.action_global_map_fragment);
-                mTaskViewModel.setTask(null);
-                stopLocationUpdates();
+                showDataLoseInfo();
             }
         });
 
@@ -413,7 +424,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
 
 
         mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(getContext(), mGoogleApiClient, LAT_LNG_BOUNDS, null);
-        mSearchView.setAdapter(mPlaceAutocompleteAdapter);
+//        mSearchView.setAdapter(mPlaceAutocompleteAdapter);
 
 
         mLocationButton.setOnClickListener(new View.OnClickListener() {
@@ -421,7 +432,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
             public void onClick(View v) {
                 if (PermissionChecker.hasLocationPermission(getContext()) && isLocationEnabled(getContext())) {
                     getDeviceLocation();
-                    moveCamera(new LatLng(mDeviceLocation.getLatitude(), mDeviceLocation.getLongitude()), DEFAULT_ZOOM, MY_LOCATION);
                 } else {
 //                    requestLocationPermissions();
 //                    checkLocationPermission();
@@ -551,7 +561,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                     if (task.isSuccessful() && task.getResult() != null) {
 //                        Toast.makeText(getContext(), "Location Found", Toast.LENGTH_SHORT).show();
                         mDeviceLocation = (Location) task.getResult();
-//                        moveCamera(new LatLng(mDeviceLocation.getLatitude(), mDeviceLocation.getLongitude()), DEFAULT_ZOOM, MY_LOCATION);
+                        moveCamera(new LatLng(mDeviceLocation.getLatitude(), mDeviceLocation.getLongitude()), DEFAULT_ZOOM, MY_LOCATION);
 
                     } else {
                         Toast.makeText(getContext(), "Location Not Found", Toast.LENGTH_SHORT).show();
@@ -829,55 +839,53 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                             }
                         });
 
-//                        for (String id : event.getParticipants()) {
-//                            if (id.equals(mCurrentUser.getId())) {
-//                                goingToEvent = true;
-//                                goingButton.setText("Not Going");
-//                            }
-//                        }
-//
-////                        eventDialogBuilder.show();
-////                        CreateEventFragment cef = new CreateEventFragment();
-//
-//                        goingButton.setOnClickListener(new View.OnClickListener() {
-//
-//                            @Override
-//                            public void onClick(View v) {
-//                                goingToEvent = !goingToEvent;
-//                                if (goingToEvent) {
-//                                    goingButton.setText("Not Going");
-//                                    event.getParticipants().add(mCurrentUser.getId());
-//                                    mCurrentUser.getmGoingEvents().add(event.getUid());
-//                                    updateUserInFirebase();
-//
-//                                    cef.updateEventInFirebase(event);
-//                                } else {
-//                                    goingButton.setText("Going");
-//                                    event.getParticipants().remove(mCurrentUser.getId());
-//                                    mCurrentUser.getmGoingEvents().remove(event.getUid());
-//
-//                                    updateUserInFirebase();
-//                                    cef.updateEventInFirebase(event);
-//                                }
-//
-//                            }
-//                        });
-//                        cancelButton.setOnClickListener(v -> {
-//                            goingToEvent = false;
-//                            eventDialogBuilder.dismiss();
-//                        });
                     }
                 }
                 return true;
             }
         });
-        
+
     }
 
     private void updateUserInFirebase() {
         mFirebaseDatabseUser = FirebaseDatabase.getInstance().getReference("users");
         mFirebaseDatabseUser.child(mCurrentUser.getId()).setValue(mCurrentUser);
 
+    }
+
+    private void setTodaysTaskInfoForCurrentUserAndUpdateInFirebase(int doneTask, long timestamp) {
+        TodaysTaskInfo todaysTaskInfo;
+        if (mCurrentUser.getTodaysTaskInfo() == null) {
+            todaysTaskInfo = new TodaysTaskInfo();
+        } else {
+            todaysTaskInfo = mCurrentUser.getTodaysTaskInfo();
+        }
+        todaysTaskInfo.setDoneTasksStatus(doneTask);
+        todaysTaskInfo.setTimestampLooseWeight(timestamp);
+        mCurrentUser.setTodaysTaskInfo(todaysTaskInfo);
+
+        updateUserInFirebase();
+    }
+
+    private void showDataLoseInfo() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Are you sure you want to exit?")
+                .setMessage("If you exit now all data will be lost")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        mGoogleApiClient.stopAutoManage(getActivity());
+                        mGoogleApiClient.disconnect();
+                        NavHostFragment.findNavController(mNavHostFragment).navigate(R.id.action_global_map_fragment);
+                        mTaskViewModel.setTask(null);
+                        stopLocationUpdates();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                    }
+                })
+                .show();
     }
 
 
@@ -1190,7 +1198,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                         mStep = calculationByDistance(new LatLng(mDeviceLocation.getLatitude(), mDeviceLocation.getLongitude()), mPreviousStep);
                         mPastDistance = mPastDistance + mStep * 1000;
                         int burnedCalories = (int) (mPastDistance * 0.055);
-                        mCaloriesView.setText(" • " + String.valueOf(burnedCalories) + " calories are burned");
+                        mCaloriesView.setText(" • " + String.valueOf(burnedCalories) + " calories burned");
                     }
                 }
                 mPreviousStep = new LatLng(mDeviceLocation.getLatitude(), mDeviceLocation.getLongitude());
@@ -1212,9 +1220,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
             constraintSet.setVerticalBias(mCurrentLocationView.getId(), biasedValue);
             constraintSet.applyTo(mMainLayout);
         }
-        if (mSearchView.isFocused()) {
-            mSearchView.clearFocus();
-        }
+//        if (mSearchView.isFocused()) {
+//            mSearchView.clearFocus();
+//        }
     }
 
     @Override
@@ -1233,5 +1241,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
             currentPolyline.remove();
         }
         currentPolyline = mGoogleMap.addPolyline((PolylineOptions) values[0]);
+    }
+
+    private void initPlaceAutoComplete() {
+        if (!com.google.android.libraries.places.api.Places.isInitialized()) {
+            com.google.android.libraries.places.api.Places.initialize(getContext(), "AIzaSyB1ukXEZhJdXq_eVeb2u5nBPD2FzjOE9YQ");
+        }
+
+        placeAutocompleteSupportFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.place_autocomplete);
+        placeAutocompleteSupportFragment.setPlaceFields(Arrays.asList(com.google.android.libraries.places.api.model.Place.Field.ID, com.google.android.libraries.places.api.model.Place.Field.NAME, com.google.android.libraries.places.api.model.Place.Field.LAT_LNG));
+
+        placeAutocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull com.google.android.libraries.places.api.model.Place place) {
+                if (place.getLatLng() != null) {
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(place.getLatLng());
+                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), DEFAULT_ZOOM));
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Status status) {
+
+            }
+        });
     }
 }

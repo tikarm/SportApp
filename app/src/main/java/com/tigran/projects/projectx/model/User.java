@@ -15,6 +15,7 @@ public class User {
     private Map<String, Integer> mSkills;
     private List<String> mImages = new ArrayList<>();
     private List<String> mGoingEvents = new ArrayList<>();
+    private TodaysTaskInfo mTodaysTaskInfo;
 
     public List<String> getmGoingEvents() {
         return mGoingEvents;
@@ -86,6 +87,14 @@ public class User {
 
     public void setImages(List<String> mImages) {
         this.mImages = mImages;
+    }
+
+    public TodaysTaskInfo getTodaysTaskInfo() {
+        return mTodaysTaskInfo;
+    }
+
+    public void setTodaysTaskInfo(TodaysTaskInfo mTodaysTaskInfo) {
+        this.mTodaysTaskInfo = mTodaysTaskInfo;
     }
 
     @Override

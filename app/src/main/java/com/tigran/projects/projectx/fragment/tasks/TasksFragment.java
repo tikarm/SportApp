@@ -3,11 +3,14 @@ package com.tigran.projects.projectx.fragment.tasks;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.graphics.Color;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,26 +47,10 @@ public class TasksFragment extends DialogFragment {
         mTaskViewModel.getDoneTask().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer integer) {
-                switch (integer){
-                    case 1:
-                        mLooseWeightButton.setBackgroundColor(Color.parseColor("#B71C1C"));
-                        mLooseWeightButton.setEnabled(false);
-                        break;
-                    case 2:
-                        mBuildMusclesButton.setBackgroundColor(Color.parseColor("#B71C1C"));
-                        mBuildMusclesButton.setEnabled(false);
-                        break;
-                    case 3:
-                        mLooseWeightButton.setBackgroundColor(Color.parseColor("#B71C1C"));
-                        mBuildMusclesButton.setBackgroundColor(Color.parseColor("#B71C1C"));
-                        mLooseWeightButton.setEnabled(false);
-                        mBuildMusclesButton.setEnabled(false);
-                        break;
-                }
+                checkTasksValidation();
             }
         });
-
-
+        checkTasksValidation();
 
 
         FragmentManager fm = getActivity().getSupportFragmentManager();
@@ -96,6 +83,74 @@ public class TasksFragment extends DialogFragment {
     private void initViews(View view) {
         mLooseWeightButton = view.findViewById(R.id.btn_loose_weight_tasks);
         mBuildMusclesButton = view.findViewById(R.id.btn_build_muscles_tasks);
+    }
+
+    private void checkTasksValidation() {
+        int integer = mTaskViewModel.getDoneTask().getValue();
+        //3000(milliseconds in a second)*60(seconds in a minute)*1440(number of minutes in  24 hours)
+        long hours24inMillis = 3000 * 60 * 1440;
+        long timestampStartLooseWeight = 0;
+        long timestampEndLooseWeight = System.currentTimeMillis() / 1000;
+        long timestampStartBuildMuscles = 0;
+        long timestampEndBuildMuscles = System.currentTimeMillis() / 1000;
+
+        switch (integer) {
+            case 1:
+                if (mTaskViewModel.getLooseWeightTimestamp() != null && mTaskViewModel.getLooseWeightTimestamp().getValue() != null) {
+                    timestampStartLooseWeight = mTaskViewModel.getLooseWeightTimestamp().getValue();
+                }
+
+                if (timestampStartLooseWeight - hours24inMillis >= timestampEndLooseWeight) {
+                    mLooseWeightButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    mLooseWeightButton.setAlpha(1f);
+                    mLooseWeightButton.setEnabled(true);
+                } else {
+                    mLooseWeightButton.setBackgroundColor(Color.GRAY);
+                    mLooseWeightButton.setAlpha(.7f);
+                    mLooseWeightButton.setEnabled(false);
+                }
+                break;
+            case 2:
+                if (mTaskViewModel.getBuildMusclesTimestamp() != null && mTaskViewModel.getBuildMusclesTimestamp().getValue() != null) {
+                    timestampStartBuildMuscles = mTaskViewModel.getBuildMusclesTimestamp().getValue();
+                }
+                if (timestampStartBuildMuscles - hours24inMillis >= timestampEndBuildMuscles) {
+                    mBuildMusclesButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    mBuildMusclesButton.setAlpha(1f);
+                    mBuildMusclesButton.setEnabled(true);
+                } else {
+                    mBuildMusclesButton.setBackgroundColor(Color.GRAY);
+                    mBuildMusclesButton.setAlpha(.7f);
+                    mBuildMusclesButton.setEnabled(false);
+                }
+                break;
+            case 3:
+                if (mTaskViewModel.getLooseWeightTimestamp() != null && mTaskViewModel.getLooseWeightTimestamp().getValue() != null) {
+                    timestampStartLooseWeight = mTaskViewModel.getLooseWeightTimestamp().getValue();
+                }
+                if (timestampStartLooseWeight - hours24inMillis >= timestampEndLooseWeight) {
+                    mLooseWeightButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    mLooseWeightButton.setAlpha(1f);
+                    mLooseWeightButton.setEnabled(true);
+                } else {
+                    mLooseWeightButton.setBackgroundColor(Color.GRAY);
+                    mLooseWeightButton.setAlpha(.7f);
+                    mLooseWeightButton.setEnabled(false);
+                }
+                if (mTaskViewModel.getBuildMusclesTimestamp() != null && mTaskViewModel.getBuildMusclesTimestamp().getValue() != null) {
+                    timestampStartBuildMuscles = mTaskViewModel.getBuildMusclesTimestamp().getValue();
+                }
+                if (timestampStartBuildMuscles - hours24inMillis >= timestampEndBuildMuscles) {
+                    mBuildMusclesButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    mBuildMusclesButton.setAlpha(1f);
+                    mBuildMusclesButton.setEnabled(true);
+                } else {
+                    mBuildMusclesButton.setBackgroundColor(Color.GRAY);
+                    mBuildMusclesButton.setAlpha(.7f);
+                    mBuildMusclesButton.setEnabled(false);
+                }
+                break;
+        }
     }
 
 

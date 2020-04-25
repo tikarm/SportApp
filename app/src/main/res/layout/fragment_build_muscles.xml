@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,7 +27,7 @@
         android:text="Each done exercise unlocks another one"
         android:textAlignment="center"
         android:textColor="@color/common_google_signin_btn_text_dark_focused"
-        android:textSize="36sp"
+        android:textSize="26sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_build_muscles" />
@@ -43,35 +42,21 @@
         android:padding="12dp"
         android:text="During each exercise do maximum repetitions"
         android:textColor="@color/common_google_signin_btn_text_dark_focused"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/squats_build_muscles" />
 
-    <TextView
-        android:id="@+id/tv_info_build_muscles2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@color/notWhite"
-        android:elevation="4dp"
-        android:padding="16dp"
-        android:text="There will be some motivational sentece"
-        android:textColor="@color/common_google_signin_btn_text_dark_focused"
-        android:textSize="24sp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_info_build_muscles" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/push_ups_build_muscles"
-        android:layout_width="194dp"
+        android:layout_width="0dp"
         android:layout_height="144dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp"
         android:background="@color/notWhite"
         android:elevation="4dp"
         app:layout_constraintEnd_toStartOf="@+id/pull_ups_build_muscles"
@@ -115,13 +100,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pull_ups_build_muscles"
-        android:layout_width="192dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/notWhite"
         android:elevation="4dp"
+        android:layout_marginEnd="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/push_ups_build_muscles"
-        app:layout_constraintTop_toTopOf="@+id/push_ups_build_muscles">
+        app:layout_constraintTop_toTopOf="@+id/push_ups_build_muscles"
+        >
 
         <pl.droidsonroids.gif.GifImageView
             android:id="@+id/giv_pull_ups_build_muscles"
@@ -192,7 +179,7 @@
         android:id="@+id/squats_build_muscles"
         android:layout_width="0dp"
         android:layout_height="204dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:background="@color/notWhite"
         android:elevation="4dp"
         app:layout_constraintEnd_toEndOf="@+id/push_ups_build_muscles"

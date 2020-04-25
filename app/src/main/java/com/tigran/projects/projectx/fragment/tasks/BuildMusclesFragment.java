@@ -2,15 +2,20 @@ package com.tigran.projects.projectx.fragment.tasks;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.graphics.BlurMaskFilter;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,13 +24,19 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.tigran.projects.projectx.R;
 import com.tigran.projects.projectx.model.BuildMusclesViewModel;
+import com.tigran.projects.projectx.model.TodaysTaskInfo;
+import com.tigran.projects.projectx.model.User;
+import com.tigran.projects.projectx.model.UserViewModel;
 import com.tigran.projects.projectx.preferences.SaveSharedPreferences;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+
 import pl.droidsonroids.gif.GifImageView;
 
 
@@ -58,6 +69,13 @@ public class BuildMusclesFragment extends Fragment {
     //view model
     private BuildMusclesViewModel mBuildMusclesViewModel;
 
+    //firebase
+    DatabaseReference mFirebaseDatabaseUser;
+
+    //user
+    private User mCurrentUser;
+    private UserViewModel mUserViewModel;
+
 
     //constructor
     public BuildMusclesFragment() {
@@ -82,13 +100,22 @@ public class BuildMusclesFragment extends Fragment {
 
 
         mBuildMusclesViewModel = ViewModelProviders.of(getActivity()).get(BuildMusclesViewModel.class);
+        mUserViewModel = ViewModelProviders.of(getActivity()).get(UserViewModel.class);
+        mUserViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(@Nullable User user) {
+                mCurrentUser = user;
+            }
+        });
+        mCurrentUser = mUserViewModel.getUser().getValue();
 
 
         if (mBuildMusclesViewModel.getUnlockLevel().getValue() == null || mBuildMusclesViewModel.getUnlockLevel().getValue() == 0) {
 //            mBuildMusclesViewModel.setUnlockLevel(0);
             Log.e("hhhh", "pref  " + sharedPreferences.getBuildMusclesUnlockLevel(getContext()));
 
-            mBuildMusclesViewModel.setUnlockLevel(sharedPreferences.getBuildMusclesUnlockLevel(getContext())-1);
+            mBuildMusclesViewModel.setUnlockLevel(sharedPreferences.getBuildMusclesUnlockLevel(getContext()) - 1);
+            setBuildMusclesTaskUnlockLevelForCurrentUserAndUpdateInFirebase(sharedPreferences.getBuildMusclesUnlockLevel(getContext()) - 1);
         }
 
 
@@ -151,6 +178,7 @@ public class BuildMusclesFragment extends Fragment {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 BuildMusclesDialogFragment buildMusclesDialogFragment = new BuildMusclesDialogFragment();
                 mBuildMusclesViewModel.setBuildMuscles(s);
+                setBuildMusclesTaskForCurrentUserAndUpdateInFirebase(s);
                 buildMusclesDialogFragment.show(fm, null);
             }
         });
@@ -175,6 +203,37 @@ public class BuildMusclesFragment extends Fragment {
 
     private void hideBotNavBar() {
         mBottomNavigationView.setVisibility(View.GONE);
+    }
+
+    private void updateUserInFirebase() {
+        mFirebaseDatabaseUser = FirebaseDatabase.getInstance().getReference("users");
+        mFirebaseDatabaseUser.child(mCurrentUser.getId()).setValue(mCurrentUser);
+    }
+
+    private void setBuildMusclesTaskForCurrentUserAndUpdateInFirebase(String taskName) {
+        TodaysTaskInfo todaysTaskInfo;
+        if (mCurrentUser.getTodaysTaskInfo() == null) {
+            todaysTaskInfo = new TodaysTaskInfo();
+        } else {
+            todaysTaskInfo = mCurrentUser.getTodaysTaskInfo();
+        }
+        todaysTaskInfo.setBuildMusclesTaskName(taskName);
+        mCurrentUser.setTodaysTaskInfo(todaysTaskInfo);
+
+        updateUserInFirebase();
+    }
+
+    private void setBuildMusclesTaskUnlockLevelForCurrentUserAndUpdateInFirebase(long level) {
+        TodaysTaskInfo todaysTaskInfo;
+        if (mCurrentUser.getTodaysTaskInfo() == null) {
+            todaysTaskInfo = new TodaysTaskInfo();
+        } else {
+            todaysTaskInfo = mCurrentUser.getTodaysTaskInfo();
+        }
+        todaysTaskInfo.setBuildMusclesUnlockLevel(level);
+        mCurrentUser.setTodaysTaskInfo(todaysTaskInfo);
+
+        updateUserInFirebase();
     }
 
 }
