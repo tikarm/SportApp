@@ -2,7 +2,9 @@ package com.tigran.projects.projectx.fragment.tasks;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.os.Bundle;
+
 import androidx.fragment.app.DialogFragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -28,14 +30,20 @@ public class DoneDialogFragment extends DialogFragment {
     private TextView mOkView;
     private ImageView mArnoldView;
 
+
     //tasks
     private TaskViewModel mTaskViewModel;
+    private String taskName;
 
     //navigation
     private Fragment mNavHostFragment;
 
     //constructor
     public DoneDialogFragment() {
+    }
+
+    public DoneDialogFragment(String taskName) {
+        this.taskName = taskName;
     }
 
 
@@ -50,19 +58,19 @@ public class DoneDialogFragment extends DialogFragment {
         mTaskViewModel = ViewModelProviders.of(getActivity()).get(TaskViewModel.class);
 
 
-
         Animation zoomAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.zoom);
         mArnoldView.startAnimation(zoomAnimation);
 
         mOkView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mTaskViewModel.setTask(LOOSE_WEIGHT_DONE);
+                if (taskName != null && taskName.equals("Loose Weight")) {
+                    mTaskViewModel.setTask(LOOSE_WEIGHT_DONE);
+                }
                 getDialog().dismiss();
-                NavHostFragment.findNavController(mNavHostFragment).navigate(R.id.action_loose_weight_map_fragment_to_map_fragment);
+                NavHostFragment.findNavController(mNavHostFragment).navigate(R.id.action_global_map_fragment);
             }
         });
-
 
 
         return view;

@@ -18,6 +18,9 @@ public class SaveSharedPreferences {
     public static final String TIME = "time";
     public static final String BUILD_MUSCLES_LEVEL = "level";
     public static final String TOP_CHARTS_PAGE = "top_charts_page";
+    public static final String BUILD_MUSCLES_TIMESTAMP = "build_muscles_timestamp";
+    public static final String LOOSE_WEIGHT_TIMESTAMP = "loose_weight_timestamp";
+    public static final String DONE_TASK_STATUS = "done_task_status";
 
     public static final String RED = "red";
 
@@ -66,6 +69,38 @@ public class SaveSharedPreferences {
 
     public Integer getTask(Context context) {
         return getPreferences(context).getInt(ENABLED_TASKS, 0);
+    }
+
+    public void setDoneTask(Context context, Integer i) {
+        SharedPreferences.Editor editor = getPreferences(context).edit();
+        editor.putInt(DONE_TASK_STATUS, i);
+        editor.apply();
+    }
+
+    public Integer getDoneTask(Context context) {
+        return getPreferences(context).getInt(DONE_TASK_STATUS, 0);
+    }
+
+
+    //timestamps
+    public void setBuildMusclesTimestamp(Context context, Long i) {
+        SharedPreferences.Editor editor = getPreferences(context).edit();
+        editor.putLong(BUILD_MUSCLES_TIMESTAMP, i);
+        editor.apply();
+    }
+
+    public Long getBuildMusclesTimestamp(Context context) {
+        return getPreferences(context).getLong(BUILD_MUSCLES_TIMESTAMP, 0);
+    }
+
+    public void setLooseWeightTimestamp(Context context, Long i) {
+        SharedPreferences.Editor editor = getPreferences(context).edit();
+        editor.putLong(LOOSE_WEIGHT_TIMESTAMP, i);
+        editor.apply();
+    }
+
+    public Long getLooseWeightTimestamp(Context context) {
+        return getPreferences(context).getLong(LOOSE_WEIGHT_TIMESTAMP, 0);
     }
 
     public void setTime(Context context, long i) {

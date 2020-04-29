@@ -325,7 +325,7 @@ public class LooseWeightMapFragment extends Fragment implements OnMapReadyCallba
 
     private void initTask() {
         mTaskViewModel = ViewModelProviders.of(getActivity()).get(TaskViewModel.class);
-        mTaskViewModel.setDoneTask(sharedPreferences.getTask(getContext()));
+        mTaskViewModel.setDoneTask(sharedPreferences.getDoneTask(getContext()));
         String taskStatus = mTaskViewModel.getTask().getValue();
         if (taskStatus != null) {
             switch (taskStatus) {
@@ -393,17 +393,19 @@ public class LooseWeightMapFragment extends Fragment implements OnMapReadyCallba
         mDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mTaskViewModel.getDoneTask().getValue() == null || mTaskViewModel.getDoneTask().getValue() == 0) {
+                if (/*mTaskViewModel.getDoneTask().getValue() == null || mTaskViewModel.getDoneTask().getValue() == 0*/
+                        sharedPreferences.getDoneTask(getContext()) == null || sharedPreferences.getDoneTask(getContext()) == 0) {
                     mTaskViewModel.setDoneTask(1);
+                    sharedPreferences.setDoneTask(getContext(), 1);
                     setTodaysTaskInfoForCurrentUserAndUpdateInFirebase(1, System.currentTimeMillis() / 1000);
                 } else {
                     mTaskViewModel.setDoneTask(3);
+                    sharedPreferences.setDoneTask(getContext(), 3);
                     setTodaysTaskInfoForCurrentUserAndUpdateInFirebase(3, System.currentTimeMillis() / 1000);
                 }
                 mTaskViewModel.setLooseWeightTimestamp(System.currentTimeMillis() / 1000);
-                sharedPreferences.setTask(getContext(), mTaskViewModel.getDoneTask().getValue());
                 FragmentManager fm = getActivity().getSupportFragmentManager();
-                DoneDialogFragment tasksFragment = new DoneDialogFragment();
+                DoneDialogFragment tasksFragment = new DoneDialogFragment("Loose Weight");
                 tasksFragment.show(fm, null);
             }
         });

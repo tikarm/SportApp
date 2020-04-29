@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,10 @@ import android.widget.Button;
 
 import com.tigran.projects.projectx.R;
 import com.tigran.projects.projectx.model.TaskViewModel;
+import com.tigran.projects.projectx.preferences.SaveSharedPreferences;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class TasksFragment extends DialogFragment {
@@ -31,6 +36,10 @@ public class TasksFragment extends DialogFragment {
 
     //viewModel
     private TaskViewModel mTaskViewModel;
+
+    //prefs
+    private SaveSharedPreferences sharedPreferences = new SaveSharedPreferences();
+
 
     //constructor
     public TasksFragment() {
@@ -86,21 +95,29 @@ public class TasksFragment extends DialogFragment {
     }
 
     private void checkTasksValidation() {
-        int integer = mTaskViewModel.getDoneTask().getValue();
+        int integer = sharedPreferences.getDoneTask(getContext());
         //3000(milliseconds in a second)*60(seconds in a minute)*1440(number of minutes in  24 hours)
-        long hours24inMillis = 3000 * 60 * 1440;
+//        long hours24inMillis = 3000 * 60 * 1440;
+        long hours24inMillis = 86400000;
         long timestampStartLooseWeight = 0;
         long timestampEndLooseWeight = System.currentTimeMillis() / 1000;
         long timestampStartBuildMuscles = 0;
         long timestampEndBuildMuscles = System.currentTimeMillis() / 1000;
+        Date dateStartLooseWeight;
+        Date dateEndLooseWeight;
+        Date dateStartBuildMuscles;
+        Date dateEndBuildMuscles;
 
         switch (integer) {
             case 1:
-                if (mTaskViewModel.getLooseWeightTimestamp() != null && mTaskViewModel.getLooseWeightTimestamp().getValue() != null) {
-                    timestampStartLooseWeight = mTaskViewModel.getLooseWeightTimestamp().getValue();
+                if (sharedPreferences.getBuildMusclesTimestamp(getContext()) != null) {
+                    timestampStartLooseWeight = sharedPreferences.getLooseWeightTimestamp(getContext());
                 }
 
-                if (timestampStartLooseWeight - hours24inMillis >= timestampEndLooseWeight) {
+                dateStartLooseWeight = new Date(timestampStartLooseWeight * 1000);
+                dateEndLooseWeight = new Date(timestampEndLooseWeight * 1000);
+
+                if (Math.abs(dateEndLooseWeight.getTime() - dateStartLooseWeight.getTime()) > hours24inMillis) {
                     mLooseWeightButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     mLooseWeightButton.setAlpha(1f);
                     mLooseWeightButton.setEnabled(true);
@@ -109,12 +126,17 @@ public class TasksFragment extends DialogFragment {
                     mLooseWeightButton.setAlpha(.7f);
                     mLooseWeightButton.setEnabled(false);
                 }
+
                 break;
             case 2:
-                if (mTaskViewModel.getBuildMusclesTimestamp() != null && mTaskViewModel.getBuildMusclesTimestamp().getValue() != null) {
-                    timestampStartBuildMuscles = mTaskViewModel.getBuildMusclesTimestamp().getValue();
+                if (sharedPreferences.getBuildMusclesTimestamp(getContext()) != null) {
+                    timestampStartBuildMuscles = sharedPreferences.getBuildMusclesTimestamp(getContext());
                 }
-                if (timestampStartBuildMuscles - hours24inMillis >= timestampEndBuildMuscles) {
+
+                dateStartBuildMuscles = new Date(timestampStartBuildMuscles * 1000);
+                dateEndBuildMuscles = new Date(timestampEndBuildMuscles * 1000);
+
+                if (Math.abs(dateEndBuildMuscles.getTime() - dateStartBuildMuscles.getTime()) > hours24inMillis) {
                     mBuildMusclesButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     mBuildMusclesButton.setAlpha(1f);
                     mBuildMusclesButton.setEnabled(true);
@@ -123,12 +145,34 @@ public class TasksFragment extends DialogFragment {
                     mBuildMusclesButton.setAlpha(.7f);
                     mBuildMusclesButton.setEnabled(false);
                 }
+
                 break;
             case 3:
-                if (mTaskViewModel.getLooseWeightTimestamp() != null && mTaskViewModel.getLooseWeightTimestamp().getValue() != null) {
-                    timestampStartLooseWeight = mTaskViewModel.getLooseWeightTimestamp().getValue();
+                if (sharedPreferences.getBuildMusclesTimestamp(getContext()) != null) {
+                    timestampStartLooseWeight = sharedPreferences.getLooseWeightTimestamp(getContext());
                 }
-                if (timestampStartLooseWeight - hours24inMillis >= timestampEndLooseWeight) {
+
+                if (sharedPreferences.getBuildMusclesTimestamp(getContext()) != null) {
+                    timestampStartBuildMuscles = sharedPreferences.getBuildMusclesTimestamp(getContext());
+                }
+
+                dateStartBuildMuscles = new Date(timestampStartBuildMuscles * 1000);
+                dateEndBuildMuscles = new Date(timestampEndBuildMuscles * 1000);
+
+                if (Math.abs(dateEndBuildMuscles.getTime() - dateStartBuildMuscles.getTime()) > hours24inMillis) {
+                    mBuildMusclesButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    mBuildMusclesButton.setAlpha(1f);
+                    mBuildMusclesButton.setEnabled(true);
+                } else {
+                    mBuildMusclesButton.setBackgroundColor(Color.GRAY);
+                    mBuildMusclesButton.setAlpha(.7f);
+                    mBuildMusclesButton.setEnabled(false);
+                }
+
+                dateStartLooseWeight = new Date(timestampStartLooseWeight * 1000);
+                dateEndLooseWeight = new Date(timestampEndLooseWeight * 1000);
+
+                if (Math.abs(dateEndLooseWeight.getTime() - dateStartLooseWeight.getTime()) > hours24inMillis) {
                     mLooseWeightButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     mLooseWeightButton.setAlpha(1f);
                     mLooseWeightButton.setEnabled(true);
@@ -137,18 +181,7 @@ public class TasksFragment extends DialogFragment {
                     mLooseWeightButton.setAlpha(.7f);
                     mLooseWeightButton.setEnabled(false);
                 }
-                if (mTaskViewModel.getBuildMusclesTimestamp() != null && mTaskViewModel.getBuildMusclesTimestamp().getValue() != null) {
-                    timestampStartBuildMuscles = mTaskViewModel.getBuildMusclesTimestamp().getValue();
-                }
-                if (timestampStartBuildMuscles - hours24inMillis >= timestampEndBuildMuscles) {
-                    mBuildMusclesButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                    mBuildMusclesButton.setAlpha(1f);
-                    mBuildMusclesButton.setEnabled(true);
-                } else {
-                    mBuildMusclesButton.setBackgroundColor(Color.GRAY);
-                    mBuildMusclesButton.setAlpha(.7f);
-                    mBuildMusclesButton.setEnabled(false);
-                }
+
                 break;
         }
     }

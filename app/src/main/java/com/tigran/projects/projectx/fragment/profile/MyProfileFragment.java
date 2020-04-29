@@ -596,10 +596,12 @@ public class MyProfileFragment extends Fragment {
         mTaskViewModel.setBuildMusclesTimestamp(null);
         mTaskViewModel.setTask(null);
         mBuildMusclesViewModel.setBuildMuscles(null);
-        mBuildMusclesViewModel.setUnlockLevel(null);
+//        mBuildMusclesViewModel.setUnlockLevel(null);
         sharedPreferences.setTopChartsPage(getContext(), 0);
         sharedPreferences.setBuildMusclesUnlockLevel(getContext(), 0);
-        sharedPreferences.setTask(getContext(), 0);
+        sharedPreferences.setDoneTask(getContext(), 0);
+        sharedPreferences.setLooseWeightTimestamp(getContext(),0l);
+        sharedPreferences.setBuildMusclesTimestamp(getContext(),0l);
     }
 
 

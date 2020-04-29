@@ -110,17 +110,37 @@ public class BuildMusclesFragment extends Fragment {
         mCurrentUser = mUserViewModel.getUser().getValue();
 
 
-        if (mBuildMusclesViewModel.getUnlockLevel().getValue() == null || mBuildMusclesViewModel.getUnlockLevel().getValue() == 0) {
-//            mBuildMusclesViewModel.setUnlockLevel(0);
-            Log.e("hhhh", "pref  " + sharedPreferences.getBuildMusclesUnlockLevel(getContext()));
+//        if (mBuildMusclesViewModel.getUnlockLevel().getValue() == null || mBuildMusclesViewModel.getUnlockLevel().getValue() == 0) {
+////            mBuildMusclesViewModel.setUnlockLevel(0);
+//            Log.e("hhhh", "pref  " + sharedPreferences.getBuildMusclesUnlockLevel(getContext()));
+//
+//            mBuildMusclesViewModel.setUnlockLevel(sharedPreferences.getBuildMusclesUnlockLevel(getContext()) - 1);
+//            setBuildMusclesTaskUnlockLevelForCurrentUserAndUpdateInFirebase(sharedPreferences.getBuildMusclesUnlockLevel(getContext()) - 1);
+//        }
 
-            mBuildMusclesViewModel.setUnlockLevel(sharedPreferences.getBuildMusclesUnlockLevel(getContext()) - 1);
-            setBuildMusclesTaskUnlockLevelForCurrentUserAndUpdateInFirebase(sharedPreferences.getBuildMusclesUnlockLevel(getContext()) - 1);
-        }
+        //TODO
+//        if (sharedPreferences.getBuildMusclesUnlockLevel(getContext()) == 0) {
+//            Log.e("hhhh", "pref  " + sharedPreferences.getBuildMusclesUnlockLevel(getContext()));
+//            setBuildMusclesTaskUnlockLevelForCurrentUserAndUpdateInFirebase(sharedPreferences.getBuildMusclesUnlockLevel(getContext()) - 1);
+//            sharedPreferences.setBuildMusclesUnlockLevel(getContext(), sharedPreferences.getBuildMusclesUnlockLevel(getContext()) - 1);
+//
+////            mBuildMusclesViewModel.setUnlockLevel(sharedPreferences.getBuildMusclesUnlockLevel(getContext()) - 1);
+//        }
 
 
-        if (mBuildMusclesViewModel.getUnlockLevel().getValue() != null) {
-            for (int i = 1; i <= mBuildMusclesViewModel.getUnlockLevel().getValue(); i++) {
+//        if (mBuildMusclesViewModel.getUnlockLevel().getValue() != null) {
+//            for (int i = 1; i <= mBuildMusclesViewModel.getUnlockLevel().getValue(); i++) {
+//                mExerciseButtons[i].setEnabled(true);
+//                mExerciseButtons[i - 1].setEnabled(false);
+//                mGifImageViews[i].setImageResource(mGifImages[i]);
+//                mLockLayouts[i].setVisibility(View.INVISIBLE);
+//                clearBlurFromTextView(mExerciseViews[i]);
+//
+//            }
+//        }
+
+//        if (sharedPreferences.getBuildMusclesUnlockLevel(getContext()) != 0) {
+            for (int i = 1; i <= sharedPreferences.getBuildMusclesUnlockLevel(getContext()); i++) {
                 mExerciseButtons[i].setEnabled(true);
                 mExerciseButtons[i - 1].setEnabled(false);
                 mGifImageViews[i].setImageResource(mGifImages[i]);
@@ -128,7 +148,7 @@ public class BuildMusclesFragment extends Fragment {
                 clearBlurFromTextView(mExerciseViews[i]);
 
             }
-        }
+//        }
 
         mBuildMusclesViewModel.getUnlockLevel().observe(getViewLifecycleOwner(), new Observer<Long>() {
             @Override

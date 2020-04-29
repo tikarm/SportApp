@@ -3,19 +3,11 @@ package com.tigran.projects.projectx.fragment.map;
 
 import android.Manifest;
 import android.app.Activity;
-
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
-import android.content.pm.PackageManager;
-
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -25,48 +17,39 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
-
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.android.gms.common.api.Status;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AlertDialog;
-
 import android.provider.Settings;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.fragment.NavHostFragment;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -80,7 +63,6 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.Projection;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -91,47 +73,33 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.maps.DirectionsApi;
-import com.google.maps.DirectionsApiRequest;
-import com.google.maps.GeoApiContext;
-import com.google.maps.model.DirectionsLeg;
-import com.google.maps.model.DirectionsResult;
-import com.google.maps.model.DirectionsRoute;
-import com.google.maps.model.DirectionsStep;
-import com.google.maps.model.EncodedPolyline;
 import com.google.firebase.database.ValueEventListener;
-import com.google.maps.model.TravelMode;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.tigran.projects.projectx.R;
-import com.tigran.projects.projectx.adapter.PlaceAutocompleteAdapter;
-//import com.har8yun.homeworks.projectx.directionhelpers.FetchURL;
-//import com.har8yun.homeworks.projectx.directionhelpers.TaskLoadedCallback;
-
-import com.tigran.projects.projectx.fragment.tasks.DoneDialogFragment;
-import com.tigran.projects.projectx.fragment.tasks.TasksFragment;
 import com.tigran.projects.projectx.fragment.event.CreateEventFragment;
-import com.tigran.projects.projectx.mapAnim.MapAnimator;
+import com.tigran.projects.projectx.fragment.tasks.TasksFragment;
 import com.tigran.projects.projectx.mapHelper.TaskLoadedCallback;
 import com.tigran.projects.projectx.model.Event;
 import com.tigran.projects.projectx.model.EventViewModel;
-import com.tigran.projects.projectx.model.TaskViewModel;
 import com.tigran.projects.projectx.model.MyLatLng;
-import com.tigran.projects.projectx.model.TodaysTaskInfo;
 import com.tigran.projects.projectx.model.User;
-import com.tigran.projects.projectx.preferences.SaveSharedPreferences;
 import com.tigran.projects.projectx.model.UserViewModel;
+import com.tigran.projects.projectx.preferences.SaveSharedPreferences;
 import com.tigran.projects.projectx.util.GpsUtils;
 import com.tigran.projects.projectx.util.PermissionChecker;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -139,14 +107,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
-import androidx.navigation.fragment.NavHostFragment;
-
-
-import static com.tigran.projects.projectx.fragment.news.NewsFragment.API_KEY;
-import static com.tigran.projects.projectx.fragment.tasks.TaskInfoFragment.LOOSE_WEIGHT;
-import static com.tigran.projects.projectx.fragment.tasks.DoneDialogFragment.LOOSE_WEIGHT_DONE;
 import static com.tigran.projects.projectx.util.NavigationHelper.onClickNavigate;
 
 
@@ -172,38 +133,27 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
     private ConstraintLayout mMainLayout;
     private BottomNavigationView mBottomNavigationView;
     private FloatingActionButton mAddEventButton;
-    private AutoCompleteTextView mSearchView;
     private FloatingActionButton mLocationButton;
     private FloatingActionButton mTasksButton;
     private ConstraintLayout mSearchLayout;
     private ConstraintLayout mTaskInfoLayout;
     private MapView mapView;
-    private ImageView mMagnifyView;
     private ImageView mCurrentLocationView;
-    private Button mExitButton;
-    private Button mDoneButton;
-    private TextView mDistanceView;
-    private TextView mCaloriesView;
     private Menu mBottomNavMenu;
-    private ImageView mClearSearchView;
 
     ConstraintSet constraintSet = new ConstraintSet();
 
-    //tasks
-    private TaskViewModel mTaskViewModel;
 
     //Map, Location
     private GoogleMap mGoogleMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
-    private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
     private GoogleApiClient mGoogleApiClient;
     private Location mDeviceLocation;
     private Polyline currentPolyline;
     private Place mPlace;
     private Marker mEventMarker;
     private List<Marker> mMarkerList = new ArrayList<>();
-    LatLng destinationPosition;
-    List<LatLng> path;
+
 
     LocationRequest mLocationRequest;
     Location mLastLocation;
@@ -254,29 +204,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
 //        if(mTaskViewModel!=null)
 //         mUser = sharedPreferences.getCurrentUser(getContext());
         initViews(view);
-//        initSearch();
         showBotNavBar();
+        initPlaceAutoComplete();
         constraintSet.clone(getActivity(), R.layout.fragment_map);
         //getDeviceLocation();
-        initPlaceAutoComplete();
 
-        mDoneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mTaskViewModel.getDoneTask().getValue() == null || mTaskViewModel.getDoneTask().getValue() == 0) {
-                    mTaskViewModel.setDoneTask(1);
-                    setTodaysTaskInfoForCurrentUserAndUpdateInFirebase(1, System.currentTimeMillis() / 1000);
-                } else {
-                    mTaskViewModel.setDoneTask(3);
-                    setTodaysTaskInfoForCurrentUserAndUpdateInFirebase(3, System.currentTimeMillis() / 1000);
-                }
-                mTaskViewModel.setLooseWeightTimestamp(System.currentTimeMillis() / 1000);
-                sharedPreferences.setTask(getContext(), mTaskViewModel.getDoneTask().getValue());
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                DoneDialogFragment tasksFragment = new DoneDialogFragment();
-                tasksFragment.show(fm, null);
-            }
-        });
 
         Toast.makeText(getContext(), "Choose Location for your Event", Toast.LENGTH_LONG).show();
 
@@ -310,45 +242,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mTaskViewModel = ViewModelProviders.of(getActivity()).get(TaskViewModel.class);
-        mTaskViewModel.setDoneTask(sharedPreferences.getTask(getContext()));
-//        mTaskViewModel.getTask().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                if (s != null) {
-//                    switch (s) {
-//                        case LOOSE_WEIGHT:
-//                            if (mDeviceLocation != null) {
-//                                mGoogleMap.clear();
-//                                changeMapDesign();
-//                                looseWeight();
-//                                startUserLocationsRunnable();
-//                                MapAnimator.getInstance().setPrimaryLineColor(getResources().getColor(R.color.colorPrimary));
-//                                MapAnimator.getInstance().setSecondaryLineColor(getResources().getColor(R.color.colorPrimaryLight));
-//                                MapAnimator.getInstance().animateRoute(mGoogleMap, path);
-//                                mGoogleMap.addMarker(new MarkerOptions().position(destinationPosition).title("Destination"));
-//                                break;
-//                            }
-//                        case LOOSE_WEIGHT_DONE:
-//                            mGoogleApiClient.stopAutoManage(getActivity());
-//                            mGoogleApiClient.disconnect();
-//                            NavHostFragment.findNavController(mNavHostFragment).navigate(R.id.action_global_map_fragment);
-//                            mTaskViewModel.setTask(null);
-//                            stopLocationUpdates();
-//
-//                            mTaskViewModel.setTask(null);
-//                            break;
-//                    }
-//                }
-//            }
-//        });
-
-    }
-
-
-    @Override
     public void onPause() {
         super.onPause();
         if (mFusedLocationProviderClient != null) {
@@ -369,19 +262,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         mAddEventButton = v.findViewById(R.id.fab_add_event_map);
         mMainLayout = v.findViewById(R.id.layout_main_map);
         mLocationButton = v.findViewById(R.id.fab_my_location_map);
-//        mSearchView = v.findViewById(R.id.et_search_map_fragment);
-        mMagnifyView = v.findViewById(R.id.iv_magnify_map_fragment);
         mTasksButton = v.findViewById(R.id.fab_tasks_map);
-        mExitButton = v.findViewById(R.id.btn_exit_map);
-        mDoneButton = v.findViewById(R.id.btn_done_map);
         mSearchLayout = v.findViewById(R.id.layout_search_map);
         mTaskInfoLayout = v.findViewById(R.id.layout_task_info_map);
         mCurrentLocationView = v.findViewById(R.id.iv_current_location_map);
-        mDistanceView = v.findViewById(R.id.tv_distance_map);
-        mCaloriesView = v.findViewById(R.id.tv_calories_map);
         mNavHostFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         mBottomNavMenu = mBottomNavigationView.getMenu();
-        mClearSearchView = v.findViewById(R.id.iv_clear_search_map_fragment);
 
 
         mapView = v.findViewById(R.id.mv_map);
@@ -399,18 +285,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 TasksFragment tasksFragment = new TasksFragment();
                 tasksFragment.show(fm, null);
-                if (mTaskViewModel.getDoneTask().getValue() != null) {
-                    if (mTaskViewModel.getDoneTask().getValue() == 3) {
+                if (sharedPreferences.getDoneTask(getContext()) != null) {
+                    if (sharedPreferences.getDoneTask(getContext()) == 3) {
                         Toast.makeText(getContext(), "You have done all today's tasks. Come back tomorrow!", Toast.LENGTH_LONG).show();
                     }
                 }
-            }
-        });
-
-        mExitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDataLoseInfo();
             }
         });
 
@@ -423,18 +302,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                 .build();
 
 
-        mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(getContext(), mGoogleApiClient, LAT_LNG_BOUNDS, null);
-//        mSearchView.setAdapter(mPlaceAutocompleteAdapter);
-
-
         mLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (PermissionChecker.hasLocationPermission(getContext()) && isLocationEnabled(getContext())) {
                     getDeviceLocation();
                 } else {
-//                    requestLocationPermissions();
-//                    checkLocationPermission();
                     requestPermissions(getContext());
                 }
             }
@@ -581,77 +454,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
-    private void initSearch() {
-        Log.d("Map", "initSearch");
-        mSearchView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH
-                        || actionId == EditorInfo.IME_ACTION_DONE
-                        || event.getAction() == KeyEvent.ACTION_DOWN
-                        || event.getAction() == KeyEvent.KEYCODE_ENTER) {
-                    Log.d("Map", "geoLocate MAP");
-                    geoLocate();
-                }
-                return false;
-            }
-        });
-
-        mSearchView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!s.toString().isEmpty()) {
-                    mClearSearchView.setVisibility(View.VISIBLE);
-                } else {
-                    mClearSearchView.setVisibility(View.GONE);
-                }
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        mMagnifyView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                geoLocate();
-            }
-        });
-        mClearSearchView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSearchView.setText("");
-            }
-        });
-    }
-
-    private void geoLocate() {
-        Log.d("Map", "geoLocate");
-        String searchString = mSearchView.getText().toString();
-        Geocoder mGeocoder = new Geocoder(getContext());
-        List<Address> mAddressList = new ArrayList<>();
-        try {
-            mAddressList = mGeocoder.getFromLocationName(searchString, 1);
-//            mGeocoder.get
-            mAddressList = mGeocoder.getFromLocationName(searchString, 1);
-
-        } catch (IOException e) {
-            Log.d("MAP", "IOException " + e.getMessage());
-        }
-        if (mAddressList.size() > 0) {
-            Address address = mAddressList.get(0);
-            Log.d("Map", "address " + address.toString());
-            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM, address.getAddressLine(0));
-        }
-
-    }
 
     public String getAddress(double lat, double lng) {
         String addressString = "";
@@ -853,42 +655,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
 
     }
 
-    private void setTodaysTaskInfoForCurrentUserAndUpdateInFirebase(int doneTask, long timestamp) {
-        TodaysTaskInfo todaysTaskInfo;
-        if (mCurrentUser.getTodaysTaskInfo() == null) {
-            todaysTaskInfo = new TodaysTaskInfo();
-        } else {
-            todaysTaskInfo = mCurrentUser.getTodaysTaskInfo();
-        }
-        todaysTaskInfo.setDoneTasksStatus(doneTask);
-        todaysTaskInfo.setTimestampLooseWeight(timestamp);
-        mCurrentUser.setTodaysTaskInfo(todaysTaskInfo);
-
-        updateUserInFirebase();
-    }
-
-    private void showDataLoseInfo() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Are you sure you want to exit?")
-                .setMessage("If you exit now all data will be lost")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        mGoogleApiClient.stopAutoManage(getActivity());
-                        mGoogleApiClient.disconnect();
-                        NavHostFragment.findNavController(mNavHostFragment).navigate(R.id.action_global_map_fragment);
-                        mTaskViewModel.setTask(null);
-                        stopLocationUpdates();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        dialog.cancel();
-                    }
-                })
-                .show();
-    }
-
-
     private void setSettings() {
         mGoogleMap.getUiSettings().setZoomControlsEnabled(sharedPreferences.getZoom(getContext()));
     }
@@ -897,91 +663,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
 
-
-    private LatLng getDestinationPoint(LatLng source, double brng, double dist) {
-        dist = dist / 6371;
-        brng = Math.toRadians(brng);
-
-        double lat1 = Math.toRadians(source.latitude), lon1 = Math.toRadians(source.longitude);
-        double lat2 = Math.asin(Math.sin(lat1) * Math.cos(dist) +
-                Math.cos(lat1) * Math.sin(dist) * Math.cos(brng));
-        double lon2 = lon1 + Math.atan2(Math.sin(brng) * Math.sin(dist) *
-                        Math.cos(lat1),
-                Math.cos(dist) - Math.sin(lat1) *
-                        Math.sin(lat2));
-        if (Double.isNaN(lat2) || Double.isNaN(lon2)) {
-            return null;
-        }
-        return new LatLng(Math.toDegrees(lat2), Math.toDegrees(lon2));
-    }
-
-    private void looseWeight() {
-        double angle = ThreadLocalRandom.current().nextDouble(0, 360);
-        LatLng sourcePosition = new LatLng(mDeviceLocation.getLatitude(), mDeviceLocation.getLongitude());
-        String origin = mDeviceLocation.getLatitude() + "," + mDeviceLocation.getLongitude();
-
-        destinationPosition = getDestinationPoint(sourcePosition, angle, 1);
-        String destination = destinationPosition.latitude + "," + destinationPosition.longitude;
-
-        mGoogleMap.addMarker(new MarkerOptions().position(sourcePosition).title("Origin")
-//                .icon(convertToBitmap(getResources().getDrawable(R.drawable.map_marker_radius), 130, 130)));
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-
-//        mGoogleMap.addMarker(new MarkerOptions().position(destinationPosition).title("Destination"));
-
-        //Define list to get all latlng for the route
-        path = new ArrayList();
-
-        //Execute Directions API request
-        GeoApiContext context = new GeoApiContext.Builder()
-                .apiKey(getResources().getString(R.string.google_maps_key))
-                .build();
-        DirectionsApiRequest req = DirectionsApi.getDirections(context, origin, destination);
-        try {
-            DirectionsResult res = req.mode(TravelMode.WALKING).await();
-
-            //Loop through legs and steps to get encoded polylines of each step
-            if (res.routes != null && res.routes.length > 0) {
-                DirectionsRoute route = res.routes[0];
-
-                if (route.legs != null) {
-                    for (int i = 0; i < route.legs.length; i++) {
-                        DirectionsLeg leg = route.legs[i];
-                        if (leg.steps != null) {
-                            for (int j = 0; j < leg.steps.length; j++) {
-                                DirectionsStep step = leg.steps[j];
-                                if (step.steps != null && step.steps.length > 0) {
-                                    for (int k = 0; k < step.steps.length; k++) {
-                                        DirectionsStep step1 = step.steps[k];
-                                        EncodedPolyline points1 = step1.polyline;
-                                        if (points1 != null) {
-                                            //Decode polyline and add points to list of route coordinates
-                                            List<com.google.maps.model.LatLng> coords1 = points1.decodePath();
-                                            for (com.google.maps.model.LatLng coord1 : coords1) {
-                                                path.add(new LatLng(coord1.lat, coord1.lng));
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    EncodedPolyline points = step.polyline;
-                                    if (points != null) {
-                                        //Decode polyline and add points to list of route coordinates
-                                        List<com.google.maps.model.LatLng> coords = points.decodePath();
-                                        for (com.google.maps.model.LatLng coord : coords) {
-                                            path.add(new LatLng(coord.lat, coord.lng));
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            Log.e(TAG, ex.getLocalizedMessage());
-        }
-
-    }
 
     public static void setAnimation(GoogleMap myMap, final List<LatLng> directionPoint, final Bitmap bitmap) {
         Marker marker = myMap.addMarker(new MarkerOptions()
@@ -1025,64 +706,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                 }
             }
         });
-    }
-
-    public BitmapDescriptor convertToBitmap(Drawable drawable, int widthPixels, int heightPixels) {
-        Bitmap mutableBitmap = Bitmap.createBitmap(widthPixels, heightPixels, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(mutableBitmap);
-        drawable.setBounds(0, 0, widthPixels, heightPixels);
-        drawable.draw(canvas);
-
-        return BitmapDescriptorFactory.fromBitmap(mutableBitmap);
-    }
-
-    public double calculationByDistance(LatLng StartP, LatLng EndP) {
-        int Radius = 6371;// radius of earth in Km
-        double lat1 = StartP.latitude;
-        double lat2 = EndP.latitude;
-        double lon1 = StartP.longitude;
-        double lon2 = EndP.longitude;
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                + Math.cos(Math.toRadians(lat1))
-                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
-                * Math.sin(dLon / 2);
-        double c = 2 * Math.asin(Math.sqrt(a));
-        double valueResult = Radius * c;
-        double km = valueResult / 1;
-        DecimalFormat newFormat = new DecimalFormat("####");
-        int kmInDec = Integer.valueOf(newFormat.format(km));
-        double meter = valueResult % 1000;
-        int meterInDec = Integer.valueOf(newFormat.format(meter));
-        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
-                + " Meter   " + meterInDec);
-
-        return Radius * c;
-    }
-
-    private void changeMapDesign() {
-        if (mSearchLayout.getVisibility() == View.VISIBLE) {
-
-            mSearchLayout.setVisibility(View.INVISIBLE);
-            mTasksButton.hide();
-            mAddEventButton.hide();
-            mBottomNavigationView.setVisibility(View.GONE);
-            mExitButton.setVisibility(View.VISIBLE);
-            mDoneButton.setVisibility(View.VISIBLE);
-            mCurrentLocationView.setVisibility(View.GONE);
-            mTaskInfoLayout.setVisibility(View.VISIBLE);
-
-        } else {
-            mSearchLayout.setVisibility(View.VISIBLE);
-            mTasksButton.show();
-            mAddEventButton.show();
-            mBottomNavigationView.setVisibility(View.VISIBLE);
-            mExitButton.setVisibility(View.GONE);
-            mDoneButton.setVisibility(View.GONE);
-            mCurrentLocationView.setVisibility(View.VISIBLE);
-            mTaskInfoLayout.setVisibility(View.GONE);
-        }
     }
 
 
@@ -1180,58 +803,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         }
     }
 
-    private Handler mHandler = new Handler();
-    private Runnable mRunnable;
-    private static final int LOCATION_UPDATE_INTERVAL = 3000;
-    double mPastDistance;
-    double mStep;
-    LatLng mPreviousStep;
-
-    private void startUserLocationsRunnable() {
-        mHandler.postDelayed(mRunnable = new Runnable() {
-            @Override
-            public void run() {
-                getDeviceLocation();
-                double d = calculationByDistance(new LatLng(mDeviceLocation.getLatitude(), mDeviceLocation.getLongitude()), destinationPosition);
-                if (mPreviousStep != null) {
-                    if (mDeviceLocation.getLatitude() != mPreviousStep.latitude || mDeviceLocation.getLongitude() != mPreviousStep.longitude) {
-                        mStep = calculationByDistance(new LatLng(mDeviceLocation.getLatitude(), mDeviceLocation.getLongitude()), mPreviousStep);
-                        mPastDistance = mPastDistance + mStep * 1000;
-                        int burnedCalories = (int) (mPastDistance * 0.055);
-                        mCaloriesView.setText(" • " + String.valueOf(burnedCalories) + " calories burned");
-                    }
-                }
-                mPreviousStep = new LatLng(mDeviceLocation.getLatitude(), mDeviceLocation.getLongitude());
-                DecimalFormat df2 = new DecimalFormat("#.##");
-                mDistanceView.setText(" • " + df2.format(d) + " km to destination");
-                mHandler.postDelayed(mRunnable, LOCATION_UPDATE_INTERVAL);
-            }
-        }, LOCATION_UPDATE_INTERVAL);
-    }
-
-    private void stopLocationUpdates() {
-        mHandler.removeCallbacks(mRunnable);
-    }
 
     @Override
     public void onCameraMove() {
-        if (mTaskViewModel.getTask().getValue() == null) {
-            float biasedValue = 0.435f;
-            constraintSet.setVerticalBias(mCurrentLocationView.getId(), biasedValue);
-            constraintSet.applyTo(mMainLayout);
-        }
-//        if (mSearchView.isFocused()) {
-//            mSearchView.clearFocus();
-//        }
+        float biasedValue = 0.435f;
+        constraintSet.setVerticalBias(mCurrentLocationView.getId(), biasedValue);
+        constraintSet.applyTo(mMainLayout);
+
     }
 
     @Override
     public void onCameraIdle() {
-        if (mTaskViewModel.getTask().getValue() == null) {
-            float biasedValue = 0.45f;
-            constraintSet.setVerticalBias(mCurrentLocationView.getId(), biasedValue);
-            constraintSet.applyTo(mMainLayout);
-        }
+
+        float biasedValue = 0.45f;
+        constraintSet.setVerticalBias(mCurrentLocationView.getId(), biasedValue);
+        constraintSet.applyTo(mMainLayout);
+
 
     }
 
@@ -1266,5 +853,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
 
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        Fragment fragment = (fm.findFragmentById(R.id.place_autocomplete));
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.remove(fragment);
+        ft.commit();
     }
 }

@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,10 +120,15 @@ public class BuildMusclesDialogFragment extends DialogFragment {
             public void onClick(View v) {
                 mDoneButtons[3].setVisibility(View.INVISIBLE);
                 mImageViews[3].setVisibility(View.VISIBLE);
-                if (mBuildMusclesViewModel.getUnlockLevel().getValue() < 3) {
-                    setBuildMusclesTaskUnlockLevelForCurrentUserAndUpdateInFirebase(mBuildMusclesViewModel.getUnlockLevel().getValue() + 1);
-                    mBuildMusclesViewModel.setUnlockLevel(mBuildMusclesViewModel.getUnlockLevel().getValue() + 1);
-                    sharedPreferences.setBuildMusclesUnlockLevel(getContext(), mBuildMusclesViewModel.getUnlockLevel().getValue() + 1);
+                if (/*mBuildMusclesViewModel.getUnlockLevel().getValue() < 3*/
+                        sharedPreferences.getBuildMusclesUnlockLevel(getContext()) < 3) {
+                    Log.e("TAG", "onClick: " + sharedPreferences.getBuildMusclesUnlockLevel(getContext()));
+//                    setBuildMusclesTaskUnlockLevelForCurrentUserAndUpdateInFirebase(mBuildMusclesViewModel.getUnlockLevel().getValue() + 1);
+                    setBuildMusclesTaskUnlockLevelForCurrentUserAndUpdateInFirebase(sharedPreferences.getBuildMusclesUnlockLevel(getContext()) + 1);
+
+                    //to trigger view-model onChanged in BuildMusclesFragment to open next exercise
+                    mBuildMusclesViewModel.setUnlockLevel(sharedPreferences.getBuildMusclesUnlockLevel(getContext()) + 1);
+                    sharedPreferences.setBuildMusclesUnlockLevel(getContext(), sharedPreferences.getBuildMusclesUnlockLevel(getContext()) + 1);
 
                 } else {
                     FragmentManager fm = getActivity().getSupportFragmentManager();
@@ -130,15 +136,18 @@ public class BuildMusclesDialogFragment extends DialogFragment {
                     tasksFragment.show(fm, null);
                     Button mSitUpsButton = getActivity().findViewById(R.id.btn_sit_ups_build_muscles);
                     mSitUpsButton.setEnabled(false);
-                    if (mTaskViewModel.getDoneTask().getValue() == null) {
+                    if (/*mTaskViewModel.getDoneTask().getValue() == null*/ sharedPreferences.getDoneTask(getContext()) == null) {
                         mTaskViewModel.setDoneTask(2);
+                        sharedPreferences.setDoneTask(getContext(), 2);
                         setTodaysTaskInfoForCurrentUserAndUpdateInFirebase(2, System.currentTimeMillis() / 1000);
                     } else {
                         mTaskViewModel.setDoneTask(3);
+                        sharedPreferences.setDoneTask(getContext(), 3);
                         setTodaysTaskInfoForCurrentUserAndUpdateInFirebase(3, System.currentTimeMillis() / 1000);
                     }
                     mTaskViewModel.setBuildMusclesTimestamp(System.currentTimeMillis() / 1000);
-                    sharedPreferences.setTask(getContext(), mTaskViewModel.getDoneTask().getValue());
+                    sharedPreferences.setBuildMusclesTimestamp(getContext(), System.currentTimeMillis() / 1000);
+//                    sharedPreferences.setTask(getContext(), mTaskViewModel.getDoneTask().getValue());
 
                 }
                 dismiss();

@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -45,6 +46,7 @@ import com.tigran.projects.projectx.preferences.SaveSharedPreferences;
 import com.tigran.projects.projectx.util.PermissionChecker;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import androidx.navigation.NavOptions;
@@ -213,15 +215,68 @@ public class SignInFragment extends Fragment {
 
         TodaysTaskInfo todaysTaskInfo = mCurrentUser.getTodaysTaskInfo();
         if (todaysTaskInfo != null) {
-            mTaskViewModel.setDoneTask(todaysTaskInfo.getDoneTasksStatus());
-            mTaskViewModel.setLooseWeightTimestamp(todaysTaskInfo.getTimestampLooseWeight());
-            mTaskViewModel.setBuildMusclesTimestamp(todaysTaskInfo.getTimestampBuildMuscles());
-            sharedPreferences.setTask(getContext(), todaysTaskInfo.getDoneTasksStatus());
+            sharedPreferences.setBuildMusclesTimestamp(getContext(), todaysTaskInfo.getTimestampBuildMuscles());
+            sharedPreferences.setLooseWeightTimestamp(getContext(), todaysTaskInfo.getTimestampLooseWeight());
+            sharedPreferences.setDoneTask(getContext(), todaysTaskInfo.getDoneTasksStatus());
             if (todaysTaskInfo.getBuildMusclesTaskName() != null) {
                 mBuildMusclesViewModel.setBuildMuscles(todaysTaskInfo.getBuildMusclesTaskName());
             }
-            mBuildMusclesViewModel.setUnlockLevel(todaysTaskInfo.getBuildMusclesUnlockLevel());
+            sharedPreferences.setBuildMusclesUnlockLevel(getContext(), todaysTaskInfo.getBuildMusclesUnlockLevel());
+
+            checkTasksValidation();
+
+            mTaskViewModel.setDoneTask(sharedPreferences.getDoneTask(getContext()));
+            mTaskViewModel.setLooseWeightTimestamp(todaysTaskInfo.getTimestampLooseWeight());
+            mTaskViewModel.setBuildMusclesTimestamp(todaysTaskInfo.getTimestampBuildMuscles());
         }
+    }
+
+    private void checkTasksValidation() {
+        int taskStatus;
+        //3000(milliseconds in a second)*60(seconds in a minute)*1440(number of minutes in  24 hours)
+//        long hours24inMillis = 3000 * 60 * 1440;
+        long hours24inMillis = 86400000;
+        long timestampStartLooseWeight = 0;
+        long timestampEndLooseWeight = System.currentTimeMillis() / 1000;
+        long timestampStartBuildMuscles = 0;
+        long timestampEndBuildMuscles = System.currentTimeMillis() / 1000;
+        boolean isLooseWeightValid = false;
+        boolean isBuildMusclesValid = false;
+
+        if (sharedPreferences.getBuildMusclesTimestamp(getContext()) != null) {
+            timestampStartLooseWeight = sharedPreferences.getLooseWeightTimestamp(getContext());
+        }
+
+        Date dateStartLooseWeight = new Date(timestampStartLooseWeight * 1000);
+        Date dateEndLooseWeight = new Date(timestampEndLooseWeight * 1000);
+
+        if (Math.abs(dateEndLooseWeight.getTime() - dateStartLooseWeight.getTime()) > hours24inMillis) {
+            isLooseWeightValid = true;
+        }
+
+
+        if (sharedPreferences.getBuildMusclesTimestamp(getContext()) != null) {
+            timestampStartBuildMuscles = sharedPreferences.getBuildMusclesTimestamp(getContext());
+        }
+        Date dateStartBuildMuscles = new Date(timestampStartBuildMuscles * 1000);
+        Date dateEndBuildMuscles = new Date(timestampEndBuildMuscles * 1000);
+
+        if (Math.abs(dateEndBuildMuscles.getTime() - dateStartBuildMuscles.getTime()) > hours24inMillis) {
+            isBuildMusclesValid = true;
+        }
+
+
+        if (isLooseWeightValid && isBuildMusclesValid) {
+            taskStatus = 0;
+        } else if (isBuildMusclesValid) {
+            taskStatus = 1;
+        } else if (isLooseWeightValid) {
+            taskStatus = 2;
+        } else {
+            taskStatus = 3;
+        }
+
+        sharedPreferences.setDoneTask(getContext(), taskStatus);
     }
 
     private void hideKeyboard() {

@@ -21,76 +21,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/iv_magnify_map_fragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="18dp"
-            android:contentDescription="@string/search"
-            android:src="@drawable/ic_search"
-            app:layout_constraintBottom_toBottomOf="@+id/place_autocomplete"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/place_autocomplete" />
 
 
-        <ImageView
-            android:id="@+id/iv_clear_search_map_fragment"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:clickable="true"
-            android:paddingEnd="16dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_close"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
+        <!--        <AutoCompleteTextView-->
+        <!--            android:id="@+id/et_search_map_fragment"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_centerVertical="true"-->
+        <!--            android:layout_marginStart="8dp"-->
+        <!--            android:layout_marginTop="16dp"-->
+        <!--            android:layout_marginEnd="16dp"-->
+        <!--            android:layout_marginBottom="16dp"-->
+        <!--            android:layout_toEndOf="@id/iv_magnify_map_fragment"-->
+        <!--            android:background="@android:drawable/screen_background_light_transparent"-->
+        <!--            android:hint="@string/enter_address_city"-->
+        <!--            android:imeOptions="actionSearch"-->
+        <!--            android:singleLine="true"-->
+        <!--            android:textColor="@android:color/black"-->
+        <!--            android:textSize="18sp"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toEndOf="@id/iv_magnify_map_fragment"-->
+        <!--            app:layout_constraintTop_toTopOf="parent" />-->
 
 
-<!--        <AutoCompleteTextView-->
-<!--            android:id="@+id/et_search_map_fragment"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_centerVertical="true"-->
-<!--            android:layout_marginStart="8dp"-->
-<!--            android:layout_marginTop="16dp"-->
-<!--            android:layout_marginEnd="16dp"-->
-<!--            android:layout_marginBottom="16dp"-->
-<!--            android:layout_toEndOf="@id/iv_magnify_map_fragment"-->
-<!--            android:background="@android:drawable/screen_background_light_transparent"-->
-<!--            android:hint="@string/enter_address_city"-->
-<!--            android:imeOptions="actionSearch"-->
-<!--            android:singleLine="true"-->
-<!--            android:textColor="@android:color/black"-->
-<!--            android:textSize="18sp"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toEndOf="@id/iv_magnify_map_fragment"-->
-<!--            app:layout_constraintTop_toTopOf="parent" />-->
-
-        <fragment
-            android:id="@+id/place_autocomplete"
-            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:layout_toEndOf="@id/iv_magnify_map_fragment"
-            android:background="@android:drawable/screen_background_light_transparent"
-            android:hint="@string/enter_address_city"
-            android:imeOptions="actionSearch"
-            android:singleLine="true"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iv_magnify_map_fragment"
-            app:layout_constraintTop_toTopOf="parent" />
+            <fragment
+                android:id="@+id/place_autocomplete"
+                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:hint="@string/enter_address_city"
+                android:imeOptions="actionSearch"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -160,13 +125,13 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
+        android:focusable="true"
         android:src="@drawable/ic_bullseye_arrow"
         app:backgroundTint="@color/colorPrimaryLight"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.26"
-        android:focusable="true" />
+        app:layout_constraintVertical_bias="0.26" />
 
     <Button
         android:id="@+id/btn_done_map"
@@ -175,16 +140,16 @@
         android:layout_marginStart="48dp"
         android:layout_marginEnd="48dp"
         android:layout_marginBottom="24dp"
-        android:text="@string/done"
-        tools:visibility="visible"
         android:backgroundTint="@android:color/white"
+        android:text="@string/done"
         android:textColor="@color/green"
         android:textSize="18sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/mv_map"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_task_info_map"
