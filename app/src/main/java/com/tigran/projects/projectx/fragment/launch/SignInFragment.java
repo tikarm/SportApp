@@ -86,6 +86,7 @@ public class SignInFragment extends Fragment {
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabase;
     public static final String DATABASE_PATH_NAME = "users";
+    DatabaseReference mFirebaseDatabaseUser;
 
     //constructor
     public SignInFragment() {
@@ -243,7 +244,7 @@ public class SignInFragment extends Fragment {
         boolean isLooseWeightValid = false;
         boolean isBuildMusclesValid = false;
 
-        if (sharedPreferences.getBuildMusclesTimestamp(getContext()) != null) {
+        if (sharedPreferences.getLooseWeightTimestamp(getContext()) != null) {
             timestampStartLooseWeight = sharedPreferences.getLooseWeightTimestamp(getContext());
         }
 
@@ -276,7 +277,16 @@ public class SignInFragment extends Fragment {
             taskStatus = 3;
         }
 
+        mCurrentUser.getTodaysTaskInfo().setDoneTasksStatus(taskStatus);
+        updateUserInFirebase();
         sharedPreferences.setDoneTask(getContext(), taskStatus);
+    }
+
+
+    private void updateUserInFirebase() {
+        mFirebaseDatabaseUser = FirebaseDatabase.getInstance().getReference("users");
+        mFirebaseDatabaseUser.child(mCurrentUser.getId()).setValue(mCurrentUser);
+
     }
 
     private void hideKeyboard() {

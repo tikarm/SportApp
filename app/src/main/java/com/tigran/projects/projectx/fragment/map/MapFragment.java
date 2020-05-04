@@ -437,7 +437,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                         moveCamera(new LatLng(mDeviceLocation.getLatitude(), mDeviceLocation.getLongitude()), DEFAULT_ZOOM, MY_LOCATION);
 
                     } else {
-                        Toast.makeText(getContext(), "Location Not Found", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), "Location Not Found", Toast.LENGTH_SHORT).show();
                     }
 
                 }

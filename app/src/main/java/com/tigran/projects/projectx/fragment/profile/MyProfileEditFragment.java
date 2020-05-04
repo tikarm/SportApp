@@ -3,8 +3,10 @@ package com.tigran.projects.projectx.fragment.profile;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,16 +17,20 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -57,6 +63,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -124,6 +131,8 @@ public class MyProfileEditFragment extends Fragment {
     private ConstraintLayout mChangePasswordLayout;
     private EditText mPasswordView;
     private EditText mConfirmPasswordView;
+    private TextInputLayout mPasswordLayout;
+    private TextInputLayout mConfirmPasswordLayout;
     private Button mChangePasswordButton;
 
     private TextView mBirthDateView;
@@ -293,6 +302,8 @@ public class MyProfileEditFragment extends Fragment {
         mFemale = view.findViewById(R.id.rb_female_my_profile_edit);
         mPasswordView = view.findViewById(R.id.etv_password_my_profile_edit);
         mConfirmPasswordView = view.findViewById(R.id.etv_confirm_password_my_profile_edit);
+        mPasswordLayout = view.findViewById(R.id.til_password_my_profile_edit);
+        mConfirmPasswordLayout = view.findViewById(R.id.til_confirm_password_my_profile_edit);
         mChangePasswordLayout = view.findViewById(R.id.layout_change_password_my_profile_edit);
         mChangePasswordView = view.findViewById(R.id.tv_change_password_my_profile_edit);
         mChangePasswordButton = view.findViewById(R.id.btn_confirm_password_change_my_profile_edit);
@@ -502,7 +513,7 @@ public class MyProfileEditFragment extends Fragment {
                 if (!hasFocus) {
                     if (!mConfirmPasswordView.getText().toString().equals(mPasswordView.getText().toString())
                             && mConfirmPasswordView.getText().length() != 0) {
-                        mConfirmPasswordView.setError(getResources().getString(R.string.confirm_password_enter));
+                        mConfirmPasswordLayout.setError(getResources().getString(R.string.confirm_password_enter));
                     }
                 }
             }
@@ -514,7 +525,7 @@ public class MyProfileEditFragment extends Fragment {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     if (mPasswordView.getText().length() < 6 && mPasswordView.getText().length() != 0) {
-                        mPasswordView.setError(getResources().getString(R.string.password_length));
+                        mPasswordLayout.setError(getResources().getString(R.string.password_length));
                     }
                 }
             }
@@ -565,9 +576,9 @@ public class MyProfileEditFragment extends Fragment {
         if (mUsernameView.getText().length() == 0) {
             mUsernameView.setError(getResources().getString(R.string.username_enter));
         } else if (mUsernameView.getError() == null && mPasswordView.getError() == null &&
-                mConfirmPasswordView.getError() == null) {
+                mConfirmPasswordLayout.getError() == null) {
             if (!mConfirmPasswordView.getText().toString().equals(mPasswordView.getText().toString())) {
-                mConfirmPasswordView.setError(getResources().getString(R.string.confirm_password_matching));
+                mConfirmPasswordLayout.setError(getResources().getString(R.string.confirm_password_matching));
             } else {
 //              updateUserPassword();
                 setUserInformation();
@@ -642,9 +653,12 @@ public class MyProfileEditFragment extends Fragment {
 
     private void updateUserPassword() {
         if (mPasswordView.getText().length() == 0) {
-            mPasswordView.setError(getResources().getString(R.string.password_enter));
+            mPasswordLayout.setError(getResources().getString(R.string.password_enter));
         } else if (mConfirmPasswordView.getText().length() == 0) {
-            mConfirmPasswordView.setError(getResources().getString(R.string.confirm_password_enter));
+            mConfirmPasswordLayout.setError(getResources().getString(R.string.confirm_password_enter));
+        } else if (!mPasswordView.getText().toString().equals(mConfirmPasswordView.getText().toString())) {
+            mConfirmPasswordLayout.setError("Wrong entered password");
+
         } else if (mFirebaseUser != null) {
             mFirebaseUser.updatePassword(mPasswordView.getText().toString())
                     .addOnCompleteListener(new OnCompleteListener<Void>() {

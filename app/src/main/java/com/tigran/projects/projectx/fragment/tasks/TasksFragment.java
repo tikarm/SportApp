@@ -140,6 +140,10 @@ public class TasksFragment extends DialogFragment {
                     mBuildMusclesButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     mBuildMusclesButton.setAlpha(1f);
                     mBuildMusclesButton.setEnabled(true);
+
+                    if (sharedPreferences.getBuildMusclesUnlockLevel(getContext()) == 3) {
+                        sharedPreferences.setBuildMusclesUnlockLevel(getContext(), 0);
+                    }
                 } else {
                     mBuildMusclesButton.setBackgroundColor(Color.GRAY);
                     mBuildMusclesButton.setAlpha(.7f);
@@ -148,7 +152,7 @@ public class TasksFragment extends DialogFragment {
 
                 break;
             case 3:
-                if (sharedPreferences.getBuildMusclesTimestamp(getContext()) != null) {
+                if (sharedPreferences.getLooseWeightTimestamp(getContext()) != null) {
                     timestampStartLooseWeight = sharedPreferences.getLooseWeightTimestamp(getContext());
                 }
 
@@ -163,6 +167,10 @@ public class TasksFragment extends DialogFragment {
                     mBuildMusclesButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     mBuildMusclesButton.setAlpha(1f);
                     mBuildMusclesButton.setEnabled(true);
+
+                    if (sharedPreferences.getBuildMusclesUnlockLevel(getContext()) == 3) {
+                        sharedPreferences.setBuildMusclesUnlockLevel(getContext(), 0);
+                    }
                 } else {
                     mBuildMusclesButton.setBackgroundColor(Color.GRAY);
                     mBuildMusclesButton.setAlpha(.7f);

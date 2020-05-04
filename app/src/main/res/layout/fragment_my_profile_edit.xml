@@ -92,17 +92,17 @@
                     android:layout_height="150dp"
                     android:contentDescription="@string/avatar"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                     />
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <ProgressBar
                     android:id="@+id/pb_avatar_my_profile_edit"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:contentDescription="@string/avatar"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:indeterminateTint="@color/colorPrimary"
                     android:visibility="visible"
-                    android:indeterminateTint="@color/colorPrimary"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -127,12 +127,15 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_confirm_password_my_profile_edit"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
                         android:visibility="visible"
                         app:layout_constraintEnd_toEndOf="@+id/til_password_my_profile_edit"
                         app:layout_constraintStart_toStartOf="@+id/til_password_my_profile_edit"
-                        app:layout_constraintTop_toBottomOf="@+id/til_password_my_profile_edit">
+                        app:layout_constraintTop_toBottomOf="@+id/til_password_my_profile_edit"
+                        app:passwordToggleEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etv_confirm_password_my_profile_edit"
@@ -147,13 +150,15 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_password_my_profile_edit"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:visibility="visible"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:passwordToggleEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etv_password_my_profile_edit"
@@ -185,19 +190,19 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="@string/username"
+                    app:layout_constraintEnd_toEndOf="@id/tv_change_password_my_profile_edit"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="@id/tv_change_password_my_profile_edit">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etv_username_my_profile_edit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:foregroundTint="@color/colorPrimary"
-                        tools:text="tigran"
                         android:maxLength="20"
                         android:singleLine="true"
-                        android:textColorHint="@color/colorPrimaryText" />
+                        android:textColorHint="@color/colorPrimaryText"
+                        tools:text="tigran" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -312,15 +317,29 @@
                 tools:layout_editor_absoluteX="3dp">
 
                 <TextView
+                    android:id="@+id/tv_birth_date_title_my_profile_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="Birth date:"
+                    android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
                     android:id="@+id/tv_birth_date_my_profile_edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:background="@drawable/bg_tv_border"
                     android:padding="10dp"
                     android:text="@string/add_your_birth_date"
                     android:textColor="@color/common_google_signin_btn_text_dark_focused"
                     android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tv_birth_date_title_my_profile_edit"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -331,34 +350,33 @@
                     android:text="@string/gender"
                     android:textColor="@color/common_google_signin_btn_text_dark_focused"
                     android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="@+id/tv_birth_date_my_profile_edit"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_birth_date_my_profile_edit" />
+                    app:layout_constraintStart_toStartOf="@+id/tv_birth_date_title_my_profile_edit"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_birth_date_title_my_profile_edit" />
 
                 <RadioGroup
                     android:id="@+id/rg_gender_my_profile_edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
                     android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_gender_my_profile_edit"
-                    app:layout_constraintStart_toEndOf="@+id/tv_gender_my_profile_edit"
+                    app:layout_constraintStart_toEndOf="@+id/tv_birth_date_title_my_profile_edit"
                     app:layout_constraintTop_toTopOf="@+id/tv_gender_my_profile_edit">
 
                     <RadioButton
                         android:id="@+id/rb_male_my_profile_edit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:buttonTint="@color/colorPrimary"
                         android:text="@string/male"
-                        android:textSize="18sp"
-                        android:buttonTint="@color/colorPrimary"/>
+                        android:textSize="18sp" />
 
                     <RadioButton
                         android:id="@+id/rb_female_my_profile_edit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:buttonTint="@color/colorPrimary"
                         android:text="@string/female"
-                        android:textSize="18sp"
-                        android:buttonTint="@color/colorPrimary"/>
+                        android:textSize="18sp" />
 
                 </RadioGroup>
             </androidx.constraintlayout.widget.ConstraintLayout>
