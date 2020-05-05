@@ -285,11 +285,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 TasksFragment tasksFragment = new TasksFragment();
                 tasksFragment.show(fm, null);
-                if (sharedPreferences.getDoneTask(getContext()) != null) {
-                    if (sharedPreferences.getDoneTask(getContext()) == 3) {
-                        Toast.makeText(getContext(), "You have done all today's tasks. Come back tomorrow!", Toast.LENGTH_LONG).show();
-                    }
-                }
+//                if (sharedPreferences.getDoneTask(getContext()) != null) {
+//                    if (sharedPreferences.getDoneTask(getContext()) == 3) {
+//                        Toast.makeText(getContext(), "You have done all today's tasks. Come back tomorrow!", Toast.LENGTH_LONG).show();
+//                    }
+//                }
             }
         });
 

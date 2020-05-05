@@ -139,7 +139,6 @@ public class SignInFragment extends Fragment {
         mUserViewModel.setUser(mCurrentUser);
         NavOptions navOptions = new NavOptions.Builder().setPopUpTo(R.id.menu_item_log_out, true).build();
         Navigation.findNavController(v).navigate(R.id.action_fragment_sign_in_to_map_fragment, null, navOptions);
-        //TODO add today's task attributes to user AND THEN save it to view model
     }
 
 
@@ -286,7 +285,6 @@ public class SignInFragment extends Fragment {
     private void updateUserInFirebase() {
         mFirebaseDatabaseUser = FirebaseDatabase.getInstance().getReference("users");
         mFirebaseDatabaseUser.child(mCurrentUser.getId()).setValue(mCurrentUser);
-
     }
 
     private void hideKeyboard() {

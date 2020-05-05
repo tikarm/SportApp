@@ -346,8 +346,6 @@ public class LooseWeightMapFragment extends Fragment implements OnMapReadyCallba
                     NavHostFragment.findNavController(mNavHostFragment).navigate(R.id.action_global_map_fragment);
                     mTaskViewModel.setTask(null);
                     stopLocationUpdates();
-
-                    mTaskViewModel.setTask(null);
                     break;
             }
         }
@@ -404,6 +402,11 @@ public class LooseWeightMapFragment extends Fragment implements OnMapReadyCallba
                     setTodaysTaskInfoForCurrentUserAndUpdateInFirebase(3, System.currentTimeMillis() / 1000);
                 }
                 mTaskViewModel.setLooseWeightTimestamp(System.currentTimeMillis() / 1000);
+                sharedPreferences.setLooseWeightTimestamp(getContext(), System.currentTimeMillis() / 1000);
+                mGoogleApiClient.stopAutoManage(getActivity());
+                mGoogleApiClient.disconnect();
+                mTaskViewModel.setTask(null);
+                stopLocationUpdates();
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 DoneDialogFragment tasksFragment = new DoneDialogFragment("Loose Weight");
                 tasksFragment.show(fm, null);

@@ -16,13 +16,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.tigran.projects.projectx.R;
+import com.tigran.projects.projectx.model.BuildMusclesViewModel;
 import com.tigran.projects.projectx.model.TaskViewModel;
+import com.tigran.projects.projectx.model.User;
+import com.tigran.projects.projectx.model.UserViewModel;
 import com.tigran.projects.projectx.preferences.SaveSharedPreferences;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static com.tigran.projects.projectx.fragment.tasks.BuildMusclesFragment.PUSH_UPS;
 
 
 public class TasksFragment extends DialogFragment {
@@ -36,9 +44,17 @@ public class TasksFragment extends DialogFragment {
 
     //viewModel
     private TaskViewModel mTaskViewModel;
+    private BuildMusclesViewModel mBuildMusclesViewModel;
+
+    //user
+    private User mCurrentUser;
+    private UserViewModel mUserViewModel;
 
     //prefs
     private SaveSharedPreferences sharedPreferences = new SaveSharedPreferences();
+
+    //firebase
+    DatabaseReference mFirebaseDatabaseUser;
 
 
     //constructor
@@ -52,11 +68,14 @@ public class TasksFragment extends DialogFragment {
         getDialog().getWindow().setBackgroundDrawableResource(R.drawable.bg_rounded_corners_dialog);
 
         initViews(view);
+        mBuildMusclesViewModel = ViewModelProviders.of(getActivity()).get(BuildMusclesViewModel.class);
+        mUserViewModel = ViewModelProviders.of(getActivity()).get(UserViewModel.class);
+        mCurrentUser = mUserViewModel.getUser().getValue();
         mTaskViewModel = ViewModelProviders.of(getActivity()).get(TaskViewModel.class);
         mTaskViewModel.getDoneTask().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer integer) {
-                checkTasksValidation();
+//                checkTasksValidation();
             }
         });
         checkTasksValidation();
@@ -96,6 +115,7 @@ public class TasksFragment extends DialogFragment {
 
     private void checkTasksValidation() {
         int integer = sharedPreferences.getDoneTask(getContext());
+
         //3000(milliseconds in a second)*60(seconds in a minute)*1440(number of minutes in  24 hours)
 //        long hours24inMillis = 3000 * 60 * 1440;
         long hours24inMillis = 86400000;
@@ -143,6 +163,8 @@ public class TasksFragment extends DialogFragment {
 
                     if (sharedPreferences.getBuildMusclesUnlockLevel(getContext()) == 3) {
                         sharedPreferences.setBuildMusclesUnlockLevel(getContext(), 0);
+                        mBuildMusclesViewModel.setBuildMuscles(PUSH_UPS);
+                        mBuildMusclesViewModel.setUnlockLevel(0l);
                     }
                 } else {
                     mBuildMusclesButton.setBackgroundColor(Color.GRAY);
@@ -152,6 +174,9 @@ public class TasksFragment extends DialogFragment {
 
                 break;
             case 3:
+                int doneTaskStatus = 3;
+                boolean isLooseWeightValid = false;
+                boolean isBuildMusclesValid = false;
                 if (sharedPreferences.getLooseWeightTimestamp(getContext()) != null) {
                     timestampStartLooseWeight = sharedPreferences.getLooseWeightTimestamp(getContext());
                 }
@@ -170,7 +195,11 @@ public class TasksFragment extends DialogFragment {
 
                     if (sharedPreferences.getBuildMusclesUnlockLevel(getContext()) == 3) {
                         sharedPreferences.setBuildMusclesUnlockLevel(getContext(), 0);
+                        mBuildMusclesViewModel.setBuildMuscles(PUSH_UPS);
+                        mBuildMusclesViewModel.setUnlockLevel(0l);
                     }
+                    isBuildMusclesValid = true;
+
                 } else {
                     mBuildMusclesButton.setBackgroundColor(Color.GRAY);
                     mBuildMusclesButton.setAlpha(.7f);
@@ -184,15 +213,40 @@ public class TasksFragment extends DialogFragment {
                     mLooseWeightButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     mLooseWeightButton.setAlpha(1f);
                     mLooseWeightButton.setEnabled(true);
+
+                    isLooseWeightValid = true;
                 } else {
                     mLooseWeightButton.setBackgroundColor(Color.GRAY);
                     mLooseWeightButton.setAlpha(.7f);
                     mLooseWeightButton.setEnabled(false);
                 }
 
+                if (isLooseWeightValid && isBuildMusclesValid) {
+                    doneTaskStatus = 0;
+                } else if (isBuildMusclesValid) {
+                    doneTaskStatus = 1;
+                } else if (isLooseWeightValid) {
+                    doneTaskStatus = 2;
+                } else {
+                    doneTaskStatus = 3;
+                }
+
+                if (doneTaskStatus == 3) {
+                    Toast.makeText(getContext(), "You have done all today's tasks. Come back tomorrow!", Toast.LENGTH_LONG).show();
+                }
+
+                mCurrentUser.getTodaysTaskInfo().setDoneTasksStatus(doneTaskStatus);
+                mCurrentUser.getTodaysTaskInfo().setBuildMusclesUnlockLevel(sharedPreferences.getBuildMusclesUnlockLevel(getContext()));
+                mCurrentUser.getTodaysTaskInfo().setBuildMusclesTaskName(mBuildMusclesViewModel.getBuildMuscles().getValue());
+                updateUserInFirebase();
+                sharedPreferences.setDoneTask(getContext(), doneTaskStatus);
+
                 break;
         }
     }
 
-
+    private void updateUserInFirebase() {
+        mFirebaseDatabaseUser = FirebaseDatabase.getInstance().getReference("users");
+        mFirebaseDatabaseUser.child(mCurrentUser.getId()).setValue(mCurrentUser);
+    }
 }
