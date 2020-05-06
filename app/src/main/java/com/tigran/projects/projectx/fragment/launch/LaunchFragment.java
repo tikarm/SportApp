@@ -87,7 +87,7 @@ public class LaunchFragment extends Fragment implements OnMapReadyCallback {
     //************************************* LIFECYCLE METHODS **************************************
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_launch, container, false);
+        View view = inflater.inflate(R.layout.fragment_launch_modern, container, false);
 
         initViews(view);
         changeDesignStyle();

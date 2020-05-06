@@ -81,7 +81,7 @@ public class SignUpFragment extends Fragment {
     //************************************ LIFECYCLE METHODS ****************************************
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
+        View view = inflater.inflate(R.layout.fragment_sign_up_modern, container, false);
 
         mProgressDialog = new ProgressDialog(this.getActivity());
 
@@ -199,7 +199,7 @@ public class SignUpFragment extends Fragment {
                     mUsernameLayout.setError(getResources().getString(R.string.username_length_long));
                     mUsernameView.setTextColor(Color.RED);
                 } else {
-                    mUsernameView.setTextColor(Color.BLACK);
+                    mUsernameView.setTextColor(Color.WHITE);
                     mUsernameLayout.setError(null);
                 }
                 if (!s.toString().matches("[a-zA-Z0-9]*")) {

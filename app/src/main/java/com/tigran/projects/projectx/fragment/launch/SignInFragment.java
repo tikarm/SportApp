@@ -100,7 +100,7 @@ public class SignInFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_sign_in, container, false);
+        View view = inflater.inflate(R.layout.fragment_sign_in_modern, container, false);
 
 
         mFirebaseAuth = FirebaseAuth.getInstance();

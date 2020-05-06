@@ -7,6 +7,7 @@
   <color name="lightGrey">#E0E0E0</color>
   <color name="notWhite">#F7F7F7</color>
   <color name="green">#009624</color>
+  <color name="error_text_color">#FFC107</color>
 
   <color name="gray_sub_title">#232F34</color>
 
