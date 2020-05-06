@@ -625,6 +625,13 @@ public class MyProfileFragment extends Fragment {
             list.add(skill);
         }
 
+        skillItemRecyclerAdapter.setOnRvItemClickListener(new SkillItemRecyclerAdapter.OnRvItemClickListener() {
+            @Override
+            public void onItemClicked(int pos) {
+
+            }
+        });
+
         RecyclerView recyclerView = getView().findViewById(R.id.rv_skills_my_profile);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(skillItemRecyclerAdapter);

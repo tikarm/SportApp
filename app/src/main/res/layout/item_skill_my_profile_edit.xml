@@ -35,6 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:hint="@string/_12"
+        android:backgroundTint="@android:color/darker_gray"
         android:inputType="number"
         android:textAlignment="center"
         android:textColor="@color/common_google_signin_btn_text_dark_focused"

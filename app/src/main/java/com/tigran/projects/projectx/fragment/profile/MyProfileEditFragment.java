@@ -367,6 +367,7 @@ public class MyProfileEditFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String currentItemName = parent.getItemAtPosition(position).toString();
+                
 
                 if (position == 0) {
                     ((TextView) view).setTextColor(Color.GRAY);
@@ -375,8 +376,8 @@ public class MyProfileEditFragment extends Fragment {
                         if (s.getSkillName().equals(currentItemName)) {
 //                            mSkillList.add(s);////
 
-                            mSkillMap.put(s.getSkillName(), s.getSkillCount());
-                            mCurrentUser.setSkills(mSkillMap);
+//                            mSkillMap.put(s.getSkillName(), s.getSkillCount());
+//                            mCurrentUser.setSkills(mSkillMap);
 
                             mSkillItemEditRecyclerAdapter.addItem(s);
                             Log.d(TAG, "onItemSelected: " + mSkillItemEditRecyclerAdapter.getItemCount());
@@ -384,6 +385,8 @@ public class MyProfileEditFragment extends Fragment {
                         }
                     }
                 }
+
+                mSkillsSpinner.setSelection(0);
             }
 
             @Override

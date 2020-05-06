@@ -2,6 +2,7 @@ package com.tigran.projects.projectx.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -49,6 +50,8 @@ public class SkillItemEditRecyclerAdapter extends RecyclerView.Adapter<SkillItem
         if (skill.getSkillName().equals("Human Flag") || skill.getSkillName().equals("Planche")
                 || skill.getSkillName().equals("ATM") || skill.getSkillName().equals("Akka")) {
             holder.skillCountView.setVisibility(View.INVISIBLE);
+        } else {
+            holder.skillCountView.setVisibility(View.VISIBLE);
         }
 
 //        holder.skillCountView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -85,10 +88,12 @@ public class SkillItemEditRecyclerAdapter extends RecyclerView.Adapter<SkillItem
 //                        mData.get(position).setSkillCount(0);
 //                    }
 //                }
-                if (s.toString().isEmpty()) {
-                    mData.get(position).setSkillCount(0);
-                } else {
-                    mData.get(position).setSkillCount(Integer.valueOf(s.toString()));
+                if (position < mData.size()) {
+                    if (s.toString().isEmpty()) {
+                        mData.get(position).setSkillCount(0);
+                    } else {
+                        mData.get(position).setSkillCount(Integer.valueOf(s.toString()));
+                    }
                 }
             }
         });
@@ -118,6 +123,7 @@ public class SkillItemEditRecyclerAdapter extends RecyclerView.Adapter<SkillItem
                 @Override
                 public void onClick(View v) {
                     mOnRvItemClickListener.onItemClicked(getAdapterPosition());
+                    skillCountView.clearFocus();
                 }
             });
         }
@@ -135,12 +141,23 @@ public class SkillItemEditRecyclerAdapter extends RecyclerView.Adapter<SkillItem
     }
 
     public void addItem(Skill item) {
-        mData.add(item);
-        notifyDataSetChanged();
+        if (!isSkillAlreadyAdded(item)) {
+            mData.add(item);
+            notifyDataSetChanged();
+        }
     }
 
     public ArrayList<Skill> getSkills() {
         return (ArrayList<Skill>) mData;
+    }
+
+    private boolean isSkillAlreadyAdded(Skill skill) {
+        for (Skill s : mData) {
+            if (skill.getSkillName().equals(s.getSkillName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
