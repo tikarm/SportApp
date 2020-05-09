@@ -214,6 +214,7 @@
     <string name="field_must_be_filled">Field must be filled</string>
     <string name="please_choose_date">Please choose date and time</string>
     <string name="edit_event">Edit event</string>
+    <string name="view_photos"><u>View photos</u></string>
 
 
 </resources>

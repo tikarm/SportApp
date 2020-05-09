@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.fragment.app.Fragment;
@@ -55,6 +56,7 @@ public class TopChartsFragment extends Fragment {
     //navigation
     private NavController mNavController;
     private Fragment mNavHostFragment;
+    private BottomNavigationView mBottomNavigationView;
 
     //views
     private TabLayout mTabLayout;
@@ -112,6 +114,7 @@ public class TopChartsFragment extends Fragment {
         getUsersFromFirebase();
         initViews(view);
         setNavigationComponent();
+        showBotNavBar();
 
         mProgressBar.setVisibility(View.GONE);
         setTabAdapter();
@@ -124,6 +127,7 @@ public class TopChartsFragment extends Fragment {
         mNavHostFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         mViewPager = view.findViewById(R.id.vp_top_charts);
         mProgressBar = view.findViewById(R.id.pb_top_charts);
+        mBottomNavigationView = getActivity().findViewById(R.id.bottom_navigation_view_main);
     }
 
     private void setTabAdapter() {
@@ -234,8 +238,10 @@ public class TopChartsFragment extends Fragment {
                         }
                     }
                 }
-                setListeners();
-                setTabAdapter();
+                if (getContext() != null) {
+                    setListeners();
+                    setTabAdapter();
+                }
 
             }
 
@@ -264,6 +270,10 @@ public class TopChartsFragment extends Fragment {
         mNavController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(setOf(R.id.top_charts_fragment)).build();
 //        NavigationUI.setupWithNavController(mToolbarTopCharts, mNavController, appBarConfiguration);
+    }
+
+    private void showBotNavBar() {
+        mBottomNavigationView.setVisibility(View.VISIBLE);
     }
 
 }

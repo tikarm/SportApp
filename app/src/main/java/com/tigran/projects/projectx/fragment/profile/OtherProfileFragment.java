@@ -138,22 +138,22 @@ public class OtherProfileFragment extends Fragment implements View.OnClickListen
         mProgressBar = view.findViewById(R.id.pb_avatar_other_profile);
         mAllPhotosView = view.findViewById(R.id.tv_all_photos_other_profile);
         mAllPhotosLayout = view.findViewById(R.id.layout_photos_other_profile);
-        mPhoto1View = view.findViewById(R.id.iv_photo1_other_profile);
-        mPhoto2View = view.findViewById(R.id.iv_photo2_other_profile);
-        mPhoto3View = view.findViewById(R.id.iv_photo3_other_profile);
-        mPhoto4View = view.findViewById(R.id.iv_photo4_other_profile);
+//        mPhoto1View = view.findViewById(R.id.iv_photo1_other_profile);
+//        mPhoto2View = view.findViewById(R.id.iv_photo2_other_profile);
+//        mPhoto3View = view.findViewById(R.id.iv_photo3_other_profile);
+//        mPhoto4View = view.findViewById(R.id.iv_photo4_other_profile);
         mNavHostFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
 
 
-        photos.add(mPhoto1View);
-        photos.add(mPhoto2View);
-        photos.add(mPhoto3View);
-        photos.add(mPhoto4View);
-
-        mPhoto1View.setOnClickListener(this);
-        mPhoto2View.setOnClickListener(this);
-        mPhoto3View.setOnClickListener(this);
-        mPhoto4View.setOnClickListener(this);
+//        photos.add(mPhoto1View);
+//        photos.add(mPhoto2View);
+//        photos.add(mPhoto3View);
+//        photos.add(mPhoto4View);
+//
+//        mPhoto1View.setOnClickListener(this);
+//        mPhoto2View.setOnClickListener(this);
+//        mPhoto3View.setOnClickListener(this);
+//        mPhoto4View.setOnClickListener(this);
 
         onClickNavigate(mAllPhotosView, R.id.action_other_profile_fragment_to_other_photos_fragment);
         onClickNavigate(mAllPhotosLayout, R.id.action_other_profile_fragment_to_other_photos_fragment);

@@ -238,7 +238,7 @@ public class MyProfileFragment extends Fragment {
         mAvatarView = view.findViewById(R.id.app_bar_image);
         mProgressBar = view.findViewById(R.id.pb_avatar_my_profile);
         mAddImageView = view.findViewById(R.id.iv_add_photo_my_profile);
-        mPhoto1View = view.findViewById(R.id.iv_photo1_my_profile);
+//        mPhoto1View = view.findViewById(R.id.iv_photo1_my_profile);
         mAllPhotosView = view.findViewById(R.id.tv_all_photos_my_profile);
         mAllPhotosLayout = view.findViewById(R.id.layout_photos_my_profile);
         mNavHostFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
@@ -261,25 +261,25 @@ public class MyProfileFragment extends Fragment {
         });
 
 
-        mPhoto1View.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Dialog dialog = new Dialog(getContext());
-                dialog.setContentView(R.layout.fragment_image_gallery);
-                imageDrawable = mPhoto1View.getDrawable();
-                ImageView image = dialog.findViewById(R.id.iv_image_gallery);
-                Button closeImage = dialog.findViewById(R.id.iv_close_photo_gallery);
-                image.setImageDrawable(imageDrawable);
-                closeImage.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
-            }
-
-        });
+//        mPhoto1View.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Dialog dialog = new Dialog(getContext());
+//                dialog.setContentView(R.layout.fragment_image_gallery);
+//                imageDrawable = mPhoto1View.getDrawable();
+//                ImageView image = dialog.findViewById(R.id.iv_image_gallery);
+//                Button closeImage = dialog.findViewById(R.id.iv_close_photo_gallery);
+//                image.setImageDrawable(imageDrawable);
+//                closeImage.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//                dialog.show();
+//            }
+//
+//        });
 
         onClickNavigate(mAllPhotosView, R.id.action_my_profile_fragment_to_photos_fragment);
         onClickNavigate(mAllPhotosLayout, R.id.action_my_profile_fragment_to_photos_fragment);
@@ -502,7 +502,6 @@ public class MyProfileFragment extends Fragment {
             @Override
             public void onSuccess(Uri uri) {
                 res = uri.toString();
-                //getContext != null lifecycle architecture component TODO
                 if (getContext() != null) {
                     Glide.with(getContext())
                             .load(res)
@@ -541,7 +540,6 @@ public class MyProfileFragment extends Fragment {
             @Override
             public void onSuccess(Uri uri) {
                 res = uri.toString();
-                //getContext != null lifecycle architecture component TODO
                 if (getContext() != null) {
                     Glide.with(getContext())
                             .load(res)
