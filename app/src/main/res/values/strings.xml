@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ProjectX</string>
+    <string name="app_name">SportNet</string>
 
     <string name="username">Username</string>
     <string name="username_content">Username can only contain letters and numbers (a–z, A–Z, 0–9)</string>

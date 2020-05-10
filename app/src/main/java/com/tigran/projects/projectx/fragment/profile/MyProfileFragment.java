@@ -487,7 +487,7 @@ public class MyProfileFragment extends Fragment {
             }
             if (mCurrentUser.getImages() != null && mCurrentUser.getImages().size() > 0) {
                 Log.d(TAG, "fillViews: " + mCurrentUser.getImages().size());
-                setImage(mCurrentUser.getImages().get(mCurrentUser.getImages().size() - 1));
+//                setImage(mCurrentUser.getImages().get(mCurrentUser.getImages().size() - 1));
             }
         }
 
